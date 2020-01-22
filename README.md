@@ -1,0 +1,2 @@
+# myomer
+More golang practice
