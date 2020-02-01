@@ -5,20 +5,20 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func main() {
 	fmt.Fprintf(os.Stdout, "Attempting to connect to %v\n", os.Getenv("DB_URL"))
 
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DB_URL"))
+	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DB_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to the db: %v\n", err)
 		os.Exit(1)
 	}
-	defer conn.Close(context.Background())
+	defer pool.Close()
 
-	rows, err := conn.Query(context.Background(), "select username from users")
+	rows, err := pool.Query(context.Background(), "select username from users")
 	defer rows.Close()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to scan row: %v\n", err)

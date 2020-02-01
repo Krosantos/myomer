@@ -45,6 +45,7 @@ github.com/jackc/pgx/v4 v4.3.0 h1:gdMglCbebclFvt/q+7oLH41su8KxtpJxj+vls51OUj0=
 github.com/jackc/pgx/v4 v4.3.0/go.mod h1:BiIGdCptiC/hXZI8EkeixUG0xzTPn9J6S2YSXEBFidE=
 github.com/jackc/puddle v0.0.0-20190413234325-e4ced69a3a2b/go.mod h1:m4B5Dj62Y0fbyuIc15OsIqK0+JU8nkqQjsgx7dvjSWk=
 github.com/jackc/puddle v0.0.0-20190608224051-11cab39313c9/go.mod h1:m4B5Dj62Y0fbyuIc15OsIqK0+JU8nkqQjsgx7dvjSWk=
+github.com/jackc/puddle v1.0.0 h1:rbjAshlgKscNa7j0jAM0uNQflis5o2XUogPMVAwtcsM=
 github.com/jackc/puddle v1.0.0/go.mod h1:m4B5Dj62Y0fbyuIc15OsIqK0+JU8nkqQjsgx7dvjSWk=
 github.com/julienschmidt/httprouter v1.3.0 h1:U0609e9tgbseu3rBINet9P48AI/D3oJs4dN7jwJOQ1U=
 github.com/julienschmidt/httprouter v1.3.0/go.mod h1:JR6WtHb+2LUe8TCKY3cZOxFyyO8IZAc4RVcycCCAKdM=
