@@ -8,3 +8,6 @@ CREATE TABLE users (
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NOT NULL
 );
+
+INSERT INTO users (username, email, salt, password, created_at, updated_at) 
+VALUES ('Krosantos', 'tymko.tecca@gmail.com', 'saltsaltsalt', 'passpasspass', NOW(), NOW());
