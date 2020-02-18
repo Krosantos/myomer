@@ -6,12 +6,11 @@ services:
             - ./_db_init:/docker-entrypoint-initdb.d
         ports:
             - 5432:5432
-        environment:
-          POSTGRES_USER: myomer
-          POSTGRES_PASSWORD: myomer
-          POSTGRES_DB: myomer
-
+        env_file: local-docker.env
+        
     adminer:
         image: adminer
         ports:
             - 8080:8080
+        env_file: local-docker.env
+        
