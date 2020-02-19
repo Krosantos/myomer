@@ -13,7 +13,6 @@ type User struct {
 	ID        int64     `json:"id"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
-	Salt      string    `json:"salt"`
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
@@ -22,7 +21,11 @@ type User struct {
 // FindUserByID -- Acquire a single User based on id
 func FindUserByID(pool *pgxpool.Pool, id int64) (User, error) {
 	user := User{}
-	err := pool.QueryRow(context.Background(), "select * from users where id = $1", id).Scan(&user.ID, &user.Username, &user.Email, &user.Salt, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	err := pool.QueryRow(context.Background(), "select * from users where id = $1", id).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	fmt.Println(user.CreatedAt.String())
 	return user, err
+}
+
+func CreateUser(pool *pgxpool.Pool, email string, username string, plantext string) error {
+
 }
