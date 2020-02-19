@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/krosantos/myomer/v2/models"
 )
 
 func main() {
@@ -18,16 +19,6 @@ func main() {
 	}
 	defer pool.Close()
 
-	rows, err := pool.Query(context.Background(), "select username from users")
-	defer rows.Close()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to scan row: %v\n", err)
-		os.Exit(1)
-	}
-	for rows.Next() {
-		var username string
-		err = rows.Scan(&username)
-
-		fmt.Println(username)
-	}
+	user, err := models.FindUserByID(pool, 1)
+	fmt.Println(user)
 }
