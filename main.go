@@ -19,6 +19,11 @@ func main() {
 	}
 	defer pool.Close()
 
-	user, err := models.FindUserByID(pool, 1)
-	fmt.Println(user)
+	// bad := models.CreateUser(pool, "turtlemere+1@live.com", "Phillip", "SECRETS")
+	// fmt.Println(bad)
+
+	validLogin := models.ValidateLogin(pool, "turtlemere+1@live.com", "SECRETS")
+	fmt.Println(validLogin)
+	// user, err := models.FindUserByID(pool, 1)
+	// fmt.Println(user)
 }
