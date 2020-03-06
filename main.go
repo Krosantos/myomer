@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/krosantos/myomer/v2/models"
 )
 
 func main() {
@@ -19,11 +19,11 @@ func main() {
 	}
 	defer pool.Close()
 
-	// bad := models.CreateUser(pool, "turtlemere+1@live.com", "Phillip", "SECRETS")
-	// fmt.Println(bad)
+	router := gin.Default()
+	router.GET("/", func(c *gin.Context) {
+		c.String(200, "We in it now, boys")
+	})
 
-	validLogin := models.ValidateLogin(pool, "turtlemere+1@live.com", "SECRETS")
-	fmt.Println(validLogin)
-	// user, err := models.FindUserByID(pool, 1)
-	// fmt.Println(user)
+	router.Run(os.Getenv("PORT"))
+
 }
