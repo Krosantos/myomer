@@ -44,6 +44,5 @@ func CreateUser(pool *pgxpool.Pool, email string, username string, plaintext str
 		return hashErr
 	}
 	_, err := pool.Exec(context.Background(), "INSERT INTO users (username, email, password, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW());", username, email, hashed)
-
 	return err
 }
