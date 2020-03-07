@@ -18,10 +18,10 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-// FindUserByID -- Acquire a single User based on id
-func FindUserByID(pool *pgxpool.Pool, id int64) (User, error) {
+// FindUserByEmail -- Acquire a single User based on email
+func FindUserByEmail(pool *pgxpool.Pool, email string) (User, error) {
 	user := User{}
-	err := pool.QueryRow(context.Background(), "select * from users where id = $1", id).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	err := pool.QueryRow(context.Background(), "select * from users where email = $1", email).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	return user, err
 }
 
