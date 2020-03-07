@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/krosantos/myomer/v2/handlers"
 )
 
 func main() {
-	fmt.Fprintf(os.Stdout, "Attempting to connect to %v\n", os.Getenv("DB_URL"))
-
 	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DB_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to the db: %v\n", err)
@@ -19,11 +17,6 @@ func main() {
 	}
 	defer pool.Close()
 
-	router := gin.Default()
-	router.GET("/", func(c *gin.Context) {
-		c.String(200, "We in it now, boys")
-	})
-
+	router := handlers.PrepareRouter(pool)
 	router.Run(os.Getenv("PORT"))
-
 }
