@@ -2,6 +2,10 @@ package handlers
 
 import (
 	"fmt"
+	"os"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/krosantos/myomer/v2/managers/users"
@@ -38,12 +42,23 @@ func PrepareRouter(pool *pgxpool.Pool) *gin.Engine {
 			c.Status(403)
 			return
 		}
-		user, err := users.FindUserByEmail(pool, requestData.Email)
+		user, findErr := users.FindUserByEmail(pool, requestData.Email)
+		if findErr != nil {
+			c.String(400, findErr.Error())
+			return
+		}
+		claims := jwt.MapClaims{
+			"userId":     user.ID,
+			"issueDate":  time.Now().Unix(),
+			"expiryDate": time.Now().Add(time.Hour * time.Duration(1)).Unix(),
+		}
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 		if err != nil {
 			c.String(400, err.Error())
 			return
 		}
-		c.JSON(200, user)
+		c.String(200, `{"token":"%v"}`, tokenString)
 	})
 
 	router.POST("/users", func(c *gin.Context) {
