@@ -22,9 +22,18 @@ type loginRequestData struct {
 	Password string `json:"password" binding:"required"`
 }
 
+func jwtAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		auth := c.GetHeader("authorization")
+		fmt.Println(auth)
+		c.Next()
+	}
+}
+
 // PrepareRouter -- Gets a gin router, loaded with the appropriate routes and middleware.
 func PrepareRouter(pool *pgxpool.Pool) *gin.Engine {
 	router := gin.Default()
+	router.Use(jwtAuth())
 
 	router.GET("/", func(c *gin.Context) {
 		c.String(200, "We in it now, boys")
