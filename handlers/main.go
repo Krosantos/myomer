@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -22,10 +23,25 @@ type loginRequestData struct {
 	Password string `json:"password" binding:"required"`
 }
 
+func keyFunc(token *jwt.Token) (interface{}, error) {
+	_, ok := token.Method.(*jwt.SigningMethodHMAC)
+	if !ok {
+		return nil, fmt.Errorf("Invalid signature")
+	}
+	return []byte(os.Getenv("JWT_SECRET")), nil
+}
+
 func jwtAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.GetHeader("authorization")
-		fmt.Println(auth)
+		split := strings.Split(auth, " ")
+		rawToken := split[1]
+		token, err := jwt.Parse(rawToken, keyFunc)
+		if err != nil {
+			c.AbortWithError(403, err)
+		}
+		fmt.Println(token.Claims)
+		// TODO: Check expiry
 		c.Next()
 	}
 }
@@ -33,28 +49,20 @@ func jwtAuth() gin.HandlerFunc {
 // PrepareRouter -- Gets a gin router, loaded with the appropriate routes and middleware.
 func PrepareRouter(pool *pgxpool.Pool) *gin.Engine {
 	router := gin.Default()
-	router.Use(jwtAuth())
-
-	router.GET("/", func(c *gin.Context) {
-		c.String(200, "We in it now, boys")
-	})
 
 	router.POST("/login", func(c *gin.Context) {
 		var requestData = loginRequestData{}
 		bindErr := c.ShouldBindJSON(&requestData)
 		if bindErr != nil {
-			c.String(400, bindErr.Error())
-			return
+			c.AbortWithError(400, bindErr)
 		}
 		valid := users.ValidateLogin(pool, requestData.Email, requestData.Password)
 		if valid != true {
-			c.Status(403)
-			return
+			c.AbortWithStatus(403)
 		}
 		user, findErr := users.FindUserByEmail(pool, requestData.Email)
 		if findErr != nil {
-			c.String(400, findErr.Error())
-			return
+			c.AbortWithError(400, findErr)
 		}
 		claims := jwt.MapClaims{
 			"userId":     user.ID,
@@ -64,8 +72,7 @@ func PrepareRouter(pool *pgxpool.Pool) *gin.Engine {
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 		tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 		if err != nil {
-			c.String(400, err.Error())
-			return
+			c.AbortWithError(400, err)
 		}
 		c.String(200, `{"token":"%v"}`, tokenString)
 	})
@@ -85,6 +92,12 @@ func PrepareRouter(pool *pgxpool.Pool) *gin.Engine {
 			fmt.Println(err)
 			c.Status(400)
 		}
+	})
+
+	router.Use(jwtAuth())
+
+	router.GET("/", func(c *gin.Context) {
+		c.String(200, "We in it now, boys")
 	})
 
 	return router
