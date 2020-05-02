@@ -30,6 +30,9 @@ func jwtAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.GetHeader("authorization")
 		split := strings.Split(auth, " ")
+		if len(split) < 2 {
+			c.AbortWithError(401, errors.New("Invalid Authentication"))
+		}
 		rawToken := split[1]
 		token, err := jwt.Parse(rawToken, keyFunc)
 		if err != nil {
