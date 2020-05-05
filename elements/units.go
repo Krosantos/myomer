@@ -12,38 +12,38 @@ type Unit struct {
 	Moxie      int
 	MoveType   moveType
 	Tile       *Tile
-	onMove     []func(Unit, Tile)
-	onAttack   []func(Unit, Tile)
-	onDie      []func(Unit, Unit)
-	onStrike   []func(Unit, Unit, int) int
-	onStruck   []func(Unit, Unit, int) int
-	onKill     []func(Unit, Unit)
+	onMove     []func(Unit, *Tile)
+	onAttack   []func(Unit, *Tile)
+	onDie      []func(Unit, *Unit)
+	onStrike   []func(Unit, *Unit, int) int
+	onStruck   []func(Unit, *Unit, int) int
+	onKill     []func(Unit, *Unit)
 	onRoundEnd []func(Unit)
 }
 
 // Move -- Move a unit to a specified tile
-func (unit Unit) Move(tile Tile) {
+func (unit Unit) Move(tile *Tile) {
 	for _, fn := range unit.onMove {
 		fn(unit, tile)
 	}
 }
 
 // Attack -- Attack a specified tile
-func (unit Unit) Attack(tile Tile) {
+func (unit Unit) Attack(tile *Tile) {
 	for _, fn := range unit.onAttack {
 		fn(unit, tile)
 	}
 }
 
 // Die -- Die with dignity and side effects
-func (unit Unit) Die(killer Unit) {
+func (unit Unit) Die(killer *Unit) {
 	for _, fn := range unit.onDie {
 		fn(unit, killer)
 	}
 }
 
 // Strike -- Calculate pre-mitigation damage, and go through side effects of an attack
-func (unit Unit) Strike(target Unit) int {
+func (unit Unit) Strike(target *Unit) int {
 	initialDamage := unit.Strength
 	for _, fn := range unit.onStrike {
 		initialDamage = fn(unit, target, initialDamage)
@@ -52,20 +52,22 @@ func (unit Unit) Strike(target Unit) int {
 }
 
 // Struck -- Calculate and receive post-mitigation damage, go through side effects, possibly die.
-func (unit Unit) Struck(attacker Unit, damage int) {
+func (unit Unit) Struck(attacker *Unit, damage int) {
 	damageReceived := damage
 	for _, fn := range unit.onStruck {
 		damageReceived = fn(unit, attacker, damageReceived)
 	}
 	unit.Damage += damageReceived
 	if unit.Damage >= unit.Health {
+		unit.Tile.Corpse = &unit
+		unit.Tile.Unit = nil
 		unit.Die(attacker)
-		attacker.Kill(unit)
+		attacker.Kill(&unit)
 	}
 }
 
 // Kill -- Run when a unit kills another
-func (unit Unit) Kill(victim Unit) {
+func (unit Unit) Kill(victim *Unit) {
 	for _, fn := range unit.onKill {
 		fn(unit, victim)
 	}
