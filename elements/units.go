@@ -19,6 +19,7 @@ type Unit struct {
 	onStruck   []func(Unit, *Unit, int) int
 	onKill     []func(Unit, *Unit)
 	onRoundEnd []func(Unit)
+	Conditions []Condition
 }
 
 // Move -- Move a unit to a specified tile
