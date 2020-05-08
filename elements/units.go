@@ -2,24 +2,26 @@ package elements
 
 // Unit -- A combat unit/board piece
 type Unit struct {
-	Name       string
-	Cost       int
-	Strength   int
-	Health     int
-	Damage     int
-	AtkRange   int
-	Speed      int
-	Moxie      int
-	MoveType   moveType
-	Tile       *Tile
-	OnMove     map[string]func(*Unit, *Tile)
-	OnAttack   map[string]func(*Unit, *Tile)
-	OnDie      map[string]func(*Unit, *Unit)
-	OnStrike   map[string]func(*Unit, *Unit, int) int
-	OnStruck   map[string]func(*Unit, *Unit, int) int
-	OnKill     map[string]func(*Unit, *Unit)
-	OnRoundEnd map[string]func(*Unit)
-	Conditions map[string]Condition
+	Name            string
+	Cost            int
+	Strength        int
+	Health          int
+	Damage          int
+	Speed           int
+	Moxie           int
+	AtkRange        int
+	AttackType      targetType
+	MoveType        moveType
+	Tile            *Tile
+	OnMove          map[string]func(*Unit, *Tile)
+	OnAttack        map[string]func(*Unit, *Tile)
+	OnDie           map[string]func(*Unit, *Unit)
+	OnStrike        map[string]func(*Unit, *Unit, int) int
+	OnStruck        map[string]func(*Unit, *Unit, int) int
+	OnKill          map[string]func(*Unit, *Unit)
+	OnRoundEnd      map[string]func(*Unit)
+	ActiveAbilities map[string]Ability
+	Conditions      map[string]Condition
 }
 
 // Move -- Move a unit to a specified tile
@@ -89,14 +91,14 @@ func (unit Unit) EndRound() {
 	}
 }
 
-// AddCondition -- Add a condition by name
+// AddCondition -- Add a condition by id
 func (unit Unit) AddCondition(condition Condition) {
-	unit.Conditions[condition.name()] = condition
+	unit.Conditions[condition.id()] = condition
 }
 
-// RemoveCondition -- Remove a condition by name
+// RemoveCondition -- Remove a condition by id
 func (unit Unit) RemoveCondition(condition Condition) {
-	delete(unit.Conditions, condition.name())
+	delete(unit.Conditions, condition.id())
 }
 
 // MoveIsValid -- Determine whether a unit can legally move to a tile

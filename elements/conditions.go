@@ -4,7 +4,7 @@ package elements
 type Condition interface {
 	onAdd(*Unit)
 	onRemove(*Unit)
-	name() string
+	id() string
 	duration() int
 	onRoundEnd(*Unit)
 }
@@ -16,11 +16,11 @@ type Poison struct {
 	strength     int
 }
 
-const poisonName = "Poison"
+const poisonID = "Poison"
 
 func (p Poison) onAdd(unit *Unit)    {}
 func (p Poison) onRemove(unit *Unit) {}
-func (p Poison) name() string        { return poisonName }
+func (p Poison) id() string          { return poisonID }
 func (p Poison) duration() int       { return p.length - p.turnsElapsed }
 func (p Poison) onRoundEnd(unit *Unit) {
 	unit.TakeDamage(nil, p.strength)

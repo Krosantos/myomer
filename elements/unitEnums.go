@@ -10,12 +10,12 @@ const (
 	infiltrate moveType = "infiltrate"
 )
 
-type attackType string
+type targetType string
 
 const (
-	adjacent attackType = "adjacent"
-	spear    attackType = "spear"
-	ranged   attackType = "ranged"
-	cone     attackType = "cone"
-	pbaoe    attackType = "pbaoe"
+	adjacent targetType = "adjacent"
+	spear    targetType = "spear"
+	ranged   targetType = "ranged"
+	cone     targetType = "cone"
+	pbaoe    targetType = "pbaoe"
 )
