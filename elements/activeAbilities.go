@@ -1,13 +1,13 @@
 package elements
 
-// Ability -- An activated ability, to be used by a unit
-type Ability interface {
+// ActiveAbility -- An activated ability, to be used by a unit
+type ActiveAbility interface {
 	id() string
 	targetIsValid(*Unit, *Tile) bool
 	activate(*Unit, *Tile)
 }
 
-var abilityRegistry = make(map[string]func(...interface{}) Ability)
+var abilityRegistry = make(map[string]func(...interface{}) ActiveAbility)
 
 func init() {
 	abilityRegistry["0010123"] = buildFireball
@@ -18,7 +18,7 @@ type fireball struct {
 	horse int
 }
 
-func buildFireball(args ...interface{}) Ability {
+func buildFireball(args ...interface{}) ActiveAbility {
 	lemon := args[0]
 	strength, ok := lemon.(int)
 	if ok == false {

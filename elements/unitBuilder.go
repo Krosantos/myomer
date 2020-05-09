@@ -50,7 +50,7 @@ func BuildUnit(s string) Unit {
 		OnStruck:        make(map[string]func(*Unit, *Unit, int) int),
 		OnKill:          make(map[string]func(*Unit, *Unit)),
 		OnRoundEnd:      make(map[string]func(*Unit)),
-		ActiveAbilities: make(map[string]Ability),
+		ActiveAbilities: make(map[string]ActiveAbility),
 		Conditions:      make(map[string]Condition),
 	}
 

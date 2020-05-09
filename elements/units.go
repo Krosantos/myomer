@@ -20,7 +20,7 @@ type Unit struct {
 	OnStruck        map[string]func(*Unit, *Unit, int) int
 	OnKill          map[string]func(*Unit, *Unit)
 	OnRoundEnd      map[string]func(*Unit)
-	ActiveAbilities map[string]Ability
+	ActiveAbilities map[string]ActiveAbility
 	Conditions      map[string]Condition
 }
 
