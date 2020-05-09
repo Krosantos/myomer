@@ -1,6 +1,8 @@
 package elements
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type unitTemplate struct {
 	Name            string            `json:"name"`
@@ -12,13 +14,13 @@ type unitTemplate struct {
 	AttackRange     int               `json:"attackRange"`
 	AttackType      targetType        `json:"attackType"`
 	MoveType        moveType          `json:"moveType"`
-	OnMove          []string          `json:"onMove"`
 	OnAttack        []string          `json:"onAttack"`
 	OnDie           []string          `json:"onDie"`
+	OnKill          []string          `json:"onKill"`
+	OnMove          []string          `json:"onMove"`
+	OnRoundEnd      []string          `json:"onRoundEnd"`
 	OnStrike        []string          `json:"onStrike"`
 	OnStruck        []string          `json:"onStruck"`
-	OnKill          []string          `json:"onKill"`
-	OnRoundEnd      []string          `json:"onRoundEnd"`
 	ActiveAbilities []abilityTemplate `json:"activeAbilities"`
 }
 
@@ -43,13 +45,13 @@ func BuildUnit(s string) Unit {
 		Moxie:           t.Moxie,
 		AttackRange:     t.AttackRange,
 		MoveType:        t.MoveType,
-		OnMove:          make(map[string]func(*Unit, *Tile)),
-		OnAttack:        make(map[string]func(*Unit, *Tile)),
-		OnDie:           make(map[string]func(*Unit, *Unit)),
-		OnStrike:        make(map[string]func(*Unit, *Unit, int) int),
-		OnStruck:        make(map[string]func(*Unit, *Unit, int) int),
-		OnKill:          make(map[string]func(*Unit, *Unit)),
-		OnRoundEnd:      make(map[string]func(*Unit)),
+		OnAttack:        make(map[string]onAttack),
+		OnDie:           make(map[string]onDie),
+		OnKill:          make(map[string]onKill),
+		OnMove:          make(map[string]onMove),
+		OnRoundEnd:      make(map[string]onRoundEnd),
+		OnStrike:        make(map[string]onStrike),
+		OnStruck:        make(map[string]onStruck),
 		ActiveAbilities: make(map[string]ActiveAbility),
 		Conditions:      make(map[string]Condition),
 	}

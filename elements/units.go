@@ -13,13 +13,13 @@ type Unit struct {
 	AttackType      targetType
 	MoveType        moveType
 	Tile            *Tile
-	OnMove          map[string]func(*Unit, *Tile)
-	OnAttack        map[string]func(*Unit, *Tile)
-	OnDie           map[string]func(*Unit, *Unit)
-	OnStrike        map[string]func(*Unit, *Unit, int) int
-	OnStruck        map[string]func(*Unit, *Unit, int) int
-	OnKill          map[string]func(*Unit, *Unit)
-	OnRoundEnd      map[string]func(*Unit)
+	OnAttack        map[string]onAttack
+	OnDie           map[string]onDie
+	OnKill          map[string]onKill
+	OnMove          map[string]onMove
+	OnRoundEnd      map[string]onRoundEnd
+	OnStrike        map[string]onStrike
+	OnStruck        map[string]onStruck
 	ActiveAbilities map[string]ActiveAbility
 	Conditions      map[string]Condition
 }
