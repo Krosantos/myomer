@@ -7,10 +7,8 @@ type ActiveAbility interface {
 	activate(*Unit, *Tile)
 }
 
-var abilityRegistry = make(map[string]func(...interface{}) ActiveAbility)
-
-func init() {
-	abilityRegistry["0010123"] = buildFireball
+var abilityRegistry = map[string]func(...interface{}) ActiveAbility{
+	"0010123": buildFireball,
 }
 
 // fireball -- yeet me mama like a wagon wheel
