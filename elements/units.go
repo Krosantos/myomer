@@ -9,7 +9,7 @@ type Unit struct {
 	Damage          int
 	Speed           int
 	Moxie           int
-	AtkRange        int
+	AttackRange     int
 	AttackType      targetType
 	MoveType        moveType
 	Tile            *Tile
