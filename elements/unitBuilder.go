@@ -56,5 +56,54 @@ func BuildUnit(s string) Unit {
 		Conditions:      make(map[string]Condition),
 	}
 
+	for _, key := range t.OnAttack {
+		fn, ok := onAttackRegistry[key]
+		if ok == true {
+			unit.OnAttack[key] = fn
+		}
+	}
+
+	for _, key := range t.OnDie {
+		fn, ok := onDieRegistry[key]
+		if ok == true {
+			unit.OnDie[key] = fn
+		}
+	}
+
+	for _, key := range t.OnKill {
+		fn, ok := onKillRegistry[key]
+		if ok == true {
+			unit.OnKill[key] = fn
+		}
+	}
+
+	for _, key := range t.OnMove {
+		fn, ok := onMoveRegistry[key]
+		if ok == true {
+			unit.OnMove[key] = fn
+		}
+	}
+
+	for _, key := range t.OnRoundEnd {
+		fn, ok := onRoundEndRegistry[key]
+		if ok == true {
+			unit.OnRoundEnd[key] = fn
+		}
+	}
+
+	for _, key := range t.OnStrike {
+		fn, ok := onStrikeRegistry[key]
+		if ok == true {
+			unit.OnStrike[key] = fn
+		}
+	}
+
+	for _, key := range t.OnStruck {
+		fn, ok := onStruckRegistry[key]
+		if ok == true {
+			unit.OnStruck[key] = fn
+		}
+	}
+
 	return unit
 }

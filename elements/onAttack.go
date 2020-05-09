@@ -2,4 +2,8 @@ package elements
 
 type onAttack func(*Unit, *Tile)
 
-var onAttackRegistry map[string]onAttack = map[string]onAttack{}
+var onAttackRegistry = map[string]onAttack{
+	"furyCutter": func(u *Unit, t *Tile) {
+		u.Strength++
+	},
+}

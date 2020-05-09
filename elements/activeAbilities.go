@@ -8,33 +8,34 @@ type ActiveAbility interface {
 }
 
 var abilityRegistry = map[string]func(...interface{}) ActiveAbility{
-	"0010123": buildFireball,
+	poisonCloudID: buildPoisonCloud,
 }
 
-// fireball -- yeet me mama like a wagon wheel
-type fireball struct {
-	horse int
+const poisonCloudID = "AB_PoisonCloud"
+
+// poisonCloud -- yeet me mama like a wagon wheel
+type poisonCloud struct {
+	strength int
 }
 
-func buildFireball(args ...interface{}) ActiveAbility {
+func buildPoisonCloud(args ...interface{}) ActiveAbility {
 	lemon := args[0]
 	strength, ok := lemon.(int)
 	if ok == false {
 		println("FAILED FAILED FAILED")
 	}
-	return fireball{strength}
+	return poisonCloud{strength}
 }
-func (f fireball) targetIsValid(unit *Unit, tile *Tile) bool {
+func (f poisonCloud) targetIsValid(unit *Unit, tile *Tile) bool {
 	return true
 }
-func (f fireball) activate(unit *Unit, tile *Tile) {
-	print("yeet")
+func (f poisonCloud) activate(unit *Unit, tile *Tile) {
 	if tile.Unit != nil {
-		tile.Unit.Damage -= 3
+		tile.Unit.Damage -= f.strength
 		poison := Poison{3, 1, 0}
 		tile.Unit.AddCondition(poison)
 	}
 }
-func (f fireball) id() string {
-	return "0010123"
+func (f poisonCloud) id() string {
+	return poisonCloudID
 }
