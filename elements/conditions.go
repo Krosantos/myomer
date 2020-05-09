@@ -12,8 +12,8 @@ type Condition interface {
 // Poison -- Take damage each turn
 type Poison struct {
 	length       int
-	turnsElapsed int
 	strength     int
+	turnsElapsed int
 }
 
 const poisonID = "Poison"

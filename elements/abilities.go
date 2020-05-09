@@ -13,6 +13,7 @@ func init() {
 	abilityRegistry["0010123"] = buildFireball
 }
 
+// fireball -- yeet me mama like a wagon wheel
 type fireball struct {
 	horse int
 }
@@ -32,6 +33,8 @@ func (f fireball) activate(unit *Unit, tile *Tile) {
 	print("yeet")
 	if tile.Unit != nil {
 		tile.Unit.Damage -= 3
+		poison := Poison{3, 1, 0}
+		tile.Unit.AddCondition(poison)
 	}
 }
 func (f fireball) id() string {
