@@ -41,21 +41,10 @@ func (t Tile) neighbours() []*Tile {
 	result := []*Tile{}
 	up := t.Map.Get(t.X, t.Y+1)
 	down := t.Map.Get(t.X, t.Y-1)
-
-	var upRight, upLeft, downRight, downLeft *Tile
-
-	even := (t.X%2 == 0)
-	if even {
-		upRight = t.Map.Get(t.X+1, t.Y)
-		upLeft = t.Map.Get(t.X+1, t.Y)
-		downRight = t.Map.Get(t.X-1, t.Y-1)
-		downLeft = t.Map.Get(t.X-1, t.Y-1)
-	} else {
-		upRight = t.Map.Get(t.X+1, t.Y+1)
-		upLeft = t.Map.Get(t.X+1, t.Y+1)
-		downRight = t.Map.Get(t.X-1, t.Y)
-		downLeft = t.Map.Get(t.X-1, t.Y)
-	}
+	upRight := t.Map.Get(t.X+1, t.Y+1)
+	upLeft := t.Map.Get(t.X-1, t.Y)
+	downRight := t.Map.Get(t.X+1, t.Y)
+	downLeft := t.Map.Get(t.X-1, t.Y-1)
 	if up != nil {
 		append(result, up)
 	}
