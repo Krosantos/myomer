@@ -9,7 +9,7 @@ func abs(i int) int {
 }
 
 // shareSign -- See if tow ints share a sign
-func shareSign(a int, b int) {
+func shareSign(a int, b int) bool {
 	if a < 0 {
 		return b < 0
 	}
@@ -24,7 +24,9 @@ func (t *Tile) heuristic(d *Tile) int {
 	if shareSign(Δx, Δy) {
 		return abs(Δx + Δy)
 	}
-	if abs(Δx) > abs(Δy) return abs(Δx)
+	if abs(Δx) > abs(Δy) {
+		return abs(Δx)
+	}
 	return abs(Δy)
 }
 
