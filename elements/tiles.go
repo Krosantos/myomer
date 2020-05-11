@@ -1,6 +1,6 @@
 package elements
 
-// Tile -- A map tile
+// Tile -- A hexagonal map tile
 type Tile struct {
 	X       int
 	Y       int
@@ -8,6 +8,7 @@ type Tile struct {
 	Unit    *Unit
 	Corpse  *Unit
 	Terrain terrain
+	Map     *TileMap
 }
 type terrain string
 
@@ -24,5 +25,54 @@ type TileMap struct {
 
 // Get -- Get a tile by coordinates
 func (t TileMap) Get(x int, y int) *Tile {
-	return t.tiles[x][y]
+	row, exists := t.tiles[x]
+	if exists == false {
+		return nil
+	}
+	tile, exists := row[y]
+	if exists == false {
+		return nil
+	}
+	return tile
+}
+
+// neighbours -- Get all neighbouring tiles
+func (t Tile) neighbours() []*Tile {
+	result := []*Tile{}
+	up := t.Map.Get(t.X, t.Y+1)
+	down := t.Map.Get(t.X, t.Y-1)
+
+	var upRight, upLeft, downRight, downLeft *Tile
+
+	even := (t.X%2 == 0)
+	if even {
+		upRight = t.Map.Get(t.X+1, t.Y)
+		upLeft = t.Map.Get(t.X+1, t.Y)
+		downRight = t.Map.Get(t.X-1, t.Y-1)
+		downLeft = t.Map.Get(t.X-1, t.Y-1)
+	} else {
+		upRight = t.Map.Get(t.X+1, t.Y+1)
+		upLeft = t.Map.Get(t.X+1, t.Y+1)
+		downRight = t.Map.Get(t.X-1, t.Y)
+		downLeft = t.Map.Get(t.X-1, t.Y)
+	}
+	if up != nil {
+		append(result, up)
+	}
+	if down != nil {
+		append(result, down)
+	}
+	if upRight != nil {
+		append(result, upRight)
+	}
+	if upLeft != nil {
+		append(result, upLeft)
+	}
+	if downRight != nil {
+		append(result, downRight)
+	}
+	if downLeft != nil {
+		append(result, downLeft)
+	}
+	return result
 }
