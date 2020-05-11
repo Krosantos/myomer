@@ -8,7 +8,7 @@ func abs(i int) int {
 	return i
 }
 
-// shareSign -- See if tow ints share a sign
+// shareSign -- See if two ints share a sign
 func shareSign(a int, b int) bool {
 	if a < 0 {
 		return b < 0
@@ -30,10 +30,42 @@ func (t *Tile) heuristic(d *Tile) int {
 	return abs(Δy)
 }
 
+// getPassable --Determine whether it's possiblt to move into a tile, based on terrain, occupants, and unit movetype
+func getPassable(u *Unit, from *Tile, to *Tile) bool {
+	hasEnemy := to.Unit != nil && to.Unit.Team != u.Team
+	isTall := abs(from.Z-to.Z) > 1
+	isImpassable := to.Terrain == water || to.Terrain == void
+
+	canPassEnemy := u.MoveType == flying || u.MoveType == teleport || u.MoveType == infiltrate
+	canPassTall := u.MoveType == flying || u.MoveType == teleport || u.MoveType == climb
+	canPassImpass := u.MoveType == flying || u.MoveType == teleport
+
+	if hasEnemy && !canPassEnemy {
+		return false
+	}
+	if isTall && !canPassTall {
+		return false
+	}
+	if isImpassable && !canPassImpass {
+		return false
+	}
+
+	return true
+}
+
+// getCanEndOn -- Determine whether a given unit can legally end its turn on a given tile
+func getCanEndOn(u *Unit, t *Tile) bool {
+	isEmpty := t.Unit == nil
+	if t.Terrain == void || t.Terrain == water {
+		return u.MoveType == flying
+	}
+	return isEmpty
+}
+
 // Path unwrapper
 
 // A*, yeet yeet yeet
 
-func (t *Tile) aStar(d *Tile) {
+func (t *Tile) aStar(u *Unit, d *Tile) {
 
 }

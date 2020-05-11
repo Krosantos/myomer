@@ -3,7 +3,9 @@ package elements
 // Unit -- A combat unit/board piece
 type Unit struct {
 	Name            string
+	Team            int
 	Cost            int
+	Color           color
 	Strength        int
 	Health          int
 	Damage          int

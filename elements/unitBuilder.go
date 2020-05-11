@@ -7,6 +7,7 @@ import (
 type unitTemplate struct {
 	Name            string            `json:"name"`
 	Cost            int               `json:"cost"`
+	Color           color             `json:"color"`
 	Strength        int               `json:"strength"`
 	Health          int               `json:"health"`
 	Speed           int               `json:"speed"`
@@ -30,7 +31,7 @@ type abilityTemplate struct {
 }
 
 // BuildUnit -- Given a JSON template, build a unit
-func BuildUnit(s string) Unit {
+func BuildUnit(s string, team int) Unit {
 	var t unitTemplate
 	err := json.Unmarshal([]byte(s), &t)
 	if err != nil {
@@ -38,7 +39,9 @@ func BuildUnit(s string) Unit {
 	}
 	unit := Unit{
 		Name:            t.Name,
+		Team:            team,
 		Cost:            t.Cost,
+		Color:           t.Color,
 		Strength:        t.Strength,
 		Health:          t.Health,
 		Speed:           t.Speed,
