@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 services: 
     db:
         image: postgres:12-alpine
@@ -19,10 +19,12 @@ services:
             context: .
             dockerfile: ./hmr.dockerfile
         volumes: 
-            - .:/app
+            - ./main.go:/app/main.go
+            - ./elements:/app/elements/
+            - ./handlers:/app/handlers/
+            - ./managers:/app/managers
         ports:
             - 3000:3000
         depends_on: 
             - db
         env_file: ./.env
-        
