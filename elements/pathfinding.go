@@ -70,16 +70,16 @@ func (t *Tile) aStar(u *Unit, d *Tile) {
 }
 
 // getMovableTiles -- Get all tiles a unit can move to
-func getMovableTiles(u *Unit) []*Tile {
+func getMovableTiles(u *Unit) map[*Tile]bool {
 	t := u.Tile
 	openList := map[*Tile]bool{t: true}
 	closedList := map[*Tile]bool{}
 	costDict := map[*Tile]int{t: 0}
-	result := []*Tile{}
+	result := map[*Tile]bool{}
 
 	for len(openList) > 0 {
 		for tile := range openList {
-			for _, neighbour := range tile.neighbours() {
+			for _, neighbour := range tile.Neighbours() {
 				costToMove := costDict[tile] + 1
 				hasMovesRemaining := costToMove <= u.Speed
 				isOnNoLists := closedList[neighbour] != true && openList[neighbour] != true
@@ -88,7 +88,7 @@ func getMovableTiles(u *Unit) []*Tile {
 					openList[neighbour] = true
 					costDict[neighbour] = costToMove
 					if getCanEndOn(u, neighbour) {
-						result = append(result, neighbour)
+						result[neighbour] = true
 					}
 					// If I'm already on the list, and this is a more efficient route, replace the cost
 				} else if openList[neighbour] == true && costToMove < costDict[neighbour] {

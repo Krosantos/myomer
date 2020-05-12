@@ -20,12 +20,12 @@ const (
 
 // TileMap -- The gameboard map, which holds tiles
 type TileMap struct {
-	tiles map[int]map[int]*Tile
+	Tiles map[int]map[int]*Tile
 }
 
 // Get -- Get a tile by coordinates
 func (t TileMap) Get(x int, y int) *Tile {
-	row, exists := t.tiles[x]
+	row, exists := t.Tiles[x]
 	if exists == false {
 		return nil
 	}
@@ -36,8 +36,22 @@ func (t TileMap) Get(x int, y int) *Tile {
 	return tile
 }
 
-// neighbours -- Get all neighbouring tiles
-func (t Tile) neighbours() []*Tile {
+// Set -- Set a tile by coordinates
+func (t TileMap) Set(tile *Tile) {
+	x := tile.X
+	y := tile.Y
+	if t.Tiles == nil {
+		t.Tiles = make(map[int]map[int]*Tile)
+	}
+	_, exists := t.Tiles[x]
+	if exists == false {
+		t.Tiles[x] = make(map[int]*Tile)
+	}
+	t.Tiles[x][y] = tile
+}
+
+// Neighbours -- Get all neighbouring tiles
+func (t Tile) Neighbours() []*Tile {
 	result := []*Tile{}
 	up := t.Map.Get(t.X, t.Y+1)
 	down := t.Map.Get(t.X, t.Y-1)

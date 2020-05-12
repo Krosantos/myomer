@@ -22,6 +22,7 @@ func PrepareRouter(pool *pgxpool.Pool) *gin.Engine {
 
 	router.POST("/login", postLogin)
 	router.POST("/users", postUsers)
+	router.POST("/test", postTest)
 
 	router.Use(jwtAuth())
 

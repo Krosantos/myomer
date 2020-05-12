@@ -105,7 +105,8 @@ func (unit Unit) RemoveCondition(condition Condition) {
 
 // MoveIsValid -- Determine whether a unit can legally move to a tile
 func (unit Unit) MoveIsValid(tile *Tile) bool {
-	return true
+	validMoves := getMovableTiles(&unit)
+	return validMoves[tile] == true
 }
 
 // AttackIsValid -- Determine whether a unit can legally attack a tile
