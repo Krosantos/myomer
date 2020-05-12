@@ -6,13 +6,23 @@ services:
             - ./_db_init:/docker-entrypoint-initdb.d
         ports:
             - 5432:5432
-        env_file:
-            - local-docker.env
+        env_file: ./.env
         
     adminer:
         image: adminer
         ports:
             - 8080:8080
-        env_file:
-            - local-docker.env
+        env_file: ./.env
+        
+    main:
+        build:
+            context: .
+            dockerfile: ./hmr.dockerfile
+        volumes: 
+            - .:/app
+        ports:
+            - 3000:3000
+        depends_on: 
+            - db
+        env_file: ./.env
         

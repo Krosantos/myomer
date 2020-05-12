@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	println(os.Getenv("DB_URL"))
 	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DB_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to the db: %v\n", err)

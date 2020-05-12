@@ -17,3 +17,6 @@
 # Environmental files/secrets
 .env
 local.env
+
+# Git
+.git/
