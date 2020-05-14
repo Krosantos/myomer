@@ -8,7 +8,7 @@ import (
 )
 
 func postTest(c *gin.Context) {
-	tm := elements.TileMap{Tiles: make(map[int]map[int]*elements.Tile)}
+	tm := elements.Board{Tiles: make(map[int]map[int]*elements.Tile)}
 	t0 := elements.Tile{
 		X:       0,
 		Y:       0,
@@ -16,7 +16,7 @@ func postTest(c *gin.Context) {
 		Unit:    nil,
 		Corpse:  nil,
 		Terrain: "grass",
-		Map:     &tm,
+		Board:   &tm,
 	}
 	t1 := elements.Tile{
 		X:       0,
@@ -25,7 +25,7 @@ func postTest(c *gin.Context) {
 		Unit:    nil,
 		Corpse:  nil,
 		Terrain: "horses",
-		Map:     &tm,
+		Board:   &tm,
 	}
 	t2 := elements.Tile{
 		X:       1,
@@ -34,7 +34,7 @@ func postTest(c *gin.Context) {
 		Unit:    nil,
 		Corpse:  nil,
 		Terrain: "water",
-		Map:     &tm,
+		Board:   &tm,
 	}
 	t3 := elements.Tile{
 		X:       1,
@@ -43,7 +43,7 @@ func postTest(c *gin.Context) {
 		Unit:    nil,
 		Corpse:  nil,
 		Terrain: "horses",
-		Map:     &tm,
+		Board:   &tm,
 	}
 	tm.Set(&t0)
 	tm.Set(&t1)
