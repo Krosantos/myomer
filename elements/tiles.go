@@ -8,7 +8,7 @@ type Tile struct {
 	Unit    *Unit
 	Corpse  *Unit
 	Terrain terrain
-	Map     *TileMap
+	Board   *Board
 }
 type terrain string
 
@@ -18,13 +18,13 @@ const (
 	water terrain = "water"
 )
 
-// TileMap -- The gameboard map, which holds tiles
-type TileMap struct {
+// Board -- The gameboard map, which holds tiles
+type Board struct {
 	Tiles map[int]map[int]*Tile
 }
 
 // Get -- Get a tile by coordinates
-func (t TileMap) Get(x int, y int) *Tile {
+func (t Board) Get(x int, y int) *Tile {
 	row, exists := t.Tiles[x]
 	if exists == false {
 		return nil
@@ -37,7 +37,7 @@ func (t TileMap) Get(x int, y int) *Tile {
 }
 
 // Set -- Set a tile by coordinates
-func (t TileMap) Set(tile *Tile) {
+func (t Board) Set(tile *Tile) {
 	x := tile.X
 	y := tile.Y
 	if t.Tiles == nil {
@@ -53,12 +53,12 @@ func (t TileMap) Set(tile *Tile) {
 // Neighbours -- Get all neighbouring tiles
 func (t Tile) Neighbours() []*Tile {
 	result := []*Tile{}
-	up := t.Map.Get(t.X, t.Y+1)
-	down := t.Map.Get(t.X, t.Y-1)
-	upRight := t.Map.Get(t.X+1, t.Y+1)
-	upLeft := t.Map.Get(t.X-1, t.Y)
-	downRight := t.Map.Get(t.X+1, t.Y)
-	downLeft := t.Map.Get(t.X-1, t.Y-1)
+	up := t.Board.Get(t.X, t.Y+1)
+	down := t.Board.Get(t.X, t.Y-1)
+	upRight := t.Board.Get(t.X+1, t.Y+1)
+	upLeft := t.Board.Get(t.X-1, t.Y)
+	downRight := t.Board.Get(t.X+1, t.Y)
+	downLeft := t.Board.Get(t.X-1, t.Y-1)
 	if up != nil {
 		result = append(result, up)
 	}
