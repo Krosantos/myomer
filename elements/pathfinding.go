@@ -62,13 +62,6 @@ func getCanEndOn(u *Unit, t *Tile) bool {
 	return isEmpty
 }
 
-// Path unwrapper
-
-// aStar -- A*, yeet yeet yeet
-func (t *Tile) aStar(u *Unit, d *Tile) {
-
-}
-
 // getMovableTiles -- Get all tiles a unit can move to
 func getMovableTiles(u *Unit) map[*Tile]bool {
 	t := u.Tile
@@ -101,4 +94,37 @@ func getMovableTiles(u *Unit) map[*Tile]bool {
 		}
 	}
 	return result
+}
+
+// getMoveIsValid -- Return whether or not a given unit can move to a given tile.
+func getMoveIsValid(u *Unit, destination *Tile) bool {
+	t := u.Tile
+	openList := map[*Tile]bool{t: true}
+	closedList := map[*Tile]bool{}
+	costDict := map[*Tile]int{t: 0}
+
+	for len(openList) > 0 {
+		for tile := range openList {
+			for _, neighbour := range tile.Neighbours() {
+				costToMove := costDict[tile] + 1
+				hasMovesRemaining := costToMove <= u.Speed
+				isOnNoLists := closedList[neighbour] != true && openList[neighbour] != true
+				// If it's not in the open or closed list, and you can move to it, add it to the open list, and the cost dictionary
+				if getPassable(u, tile, neighbour) && isOnNoLists && hasMovesRemaining {
+					openList[neighbour] = true
+					costDict[neighbour] = costToMove
+					if getCanEndOn(u, neighbour) && neighbour == destination {
+						return true
+					}
+					// If I'm already on the list, and this is a more efficient route, replace the cost
+				} else if openList[neighbour] == true && costToMove < costDict[neighbour] {
+					costDict[neighbour] = costToMove
+				}
+			}
+			// We've looked at all the neighbours, consign this tile to the closed list.
+			closedList[tile] = true
+			delete(openList, tile)
+		}
+	}
+	return false
 }
