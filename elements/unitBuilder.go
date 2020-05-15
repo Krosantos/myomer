@@ -19,9 +19,9 @@ type unitTemplate struct {
 	OnDie           []string          `json:"onDie"`
 	OnKill          []string          `json:"onKill"`
 	OnMove          []string          `json:"onMove"`
-	OnRoundEnd      []string          `json:"onRoundEnd"`
 	OnStrike        []string          `json:"onStrike"`
 	OnStruck        []string          `json:"onStruck"`
+	OnTurnEnd       []string          `json:"onTurnEnd"`
 	ActiveAbilities []abilityTemplate `json:"activeAbilities"`
 }
 
@@ -52,9 +52,9 @@ func BuildUnit(s string, team int) Unit {
 		OnDie:           make(map[string]onDie),
 		OnKill:          make(map[string]onKill),
 		OnMove:          make(map[string]onMove),
-		OnRoundEnd:      make(map[string]onRoundEnd),
 		OnStrike:        make(map[string]onStrike),
 		OnStruck:        make(map[string]onStruck),
+		OnTurnEnd:       make(map[string]onTurnEnd),
 		ActiveAbilities: make(map[string]ActiveAbility),
 		Conditions:      make(map[string]Condition),
 	}
@@ -87,13 +87,6 @@ func BuildUnit(s string, team int) Unit {
 		}
 	}
 
-	for _, key := range t.OnRoundEnd {
-		fn, ok := onRoundEndRegistry[key]
-		if ok == true {
-			unit.OnRoundEnd[key] = fn
-		}
-	}
-
 	for _, key := range t.OnStrike {
 		fn, ok := onStrikeRegistry[key]
 		if ok == true {
@@ -105,6 +98,13 @@ func BuildUnit(s string, team int) Unit {
 		fn, ok := onStruckRegistry[key]
 		if ok == true {
 			unit.OnStruck[key] = fn
+		}
+	}
+
+	for _, key := range t.OnTurnEnd {
+		fn, ok := onTurnEndRegistry[key]
+		if ok == true {
+			unit.OnTurnEnd[key] = fn
 		}
 	}
 

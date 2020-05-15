@@ -19,9 +19,9 @@ type Unit struct {
 	OnDie           map[string]onDie
 	OnKill          map[string]onKill
 	OnMove          map[string]onMove
-	OnRoundEnd      map[string]onRoundEnd
 	OnStrike        map[string]onStrike
 	OnStruck        map[string]onStruck
+	OnTurnEnd       map[string]onTurnEnd
 	ActiveAbilities map[string]ActiveAbility
 	Conditions      map[string]Condition
 }
@@ -65,6 +65,14 @@ func (unit Unit) Struck(attacker *Unit, damage int) {
 	unit.TakeDamage(attacker, damageReceived)
 }
 
+// HealDamage -- Recover health
+func (unit Unit) HealDamage(damage int) {
+	unit.Damage -= damage
+	if unit.Damage < 0 {
+		unit.Damage = 0
+	}
+}
+
 // TakeDamage -- Actually receive damage, possibly die
 func (unit Unit) TakeDamage(attacker *Unit, damage int) {
 	unit.Damage += damage
@@ -85,7 +93,7 @@ func (unit Unit) Kill(victim *Unit) {
 
 // EndRound -- Run on end of round for per-turn effects
 func (unit Unit) EndRound() {
-	for _, fn := range unit.OnRoundEnd {
+	for _, fn := range unit.OnTurnEnd {
 		fn(&unit)
 	}
 	for _, condition := range unit.Conditions {
