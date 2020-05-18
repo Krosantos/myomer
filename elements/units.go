@@ -15,34 +15,37 @@ type Unit struct {
 	AttackType      targetType
 	MoveType        moveType
 	Tile            *Tile
-	OnAttack        map[string]onAttack
-	OnDie           map[string]onDie
-	OnKill          map[string]onKill
-	OnMove          map[string]onMove
-	OnStrike        map[string]onStrike
-	OnStruck        map[string]onStruck
-	OnTurnEnd       map[string]onTurnEnd
+	OnAttack        []string
+	OnDie           []string
+	OnKill          []string
+	OnMove          []string
+	OnStrike        []string
+	OnStruck        []string
+	OnTurnEnd       []string
 	ActiveAbilities map[string]ActiveAbility
 	Conditions      map[string]Condition
 }
 
 // Move -- Move a unit to a specified tile
 func (unit Unit) Move(tile *Tile) {
-	for _, fn := range unit.OnMove {
+	for _, ability := range unit.OnMove {
+		fn := onMoveRegistry[ability]
 		fn(&unit, tile)
 	}
 }
 
 // Attack -- Attack a specified tile
 func (unit Unit) Attack(tile *Tile) {
-	for _, fn := range unit.OnAttack {
+	for _, ability := range unit.OnAttack {
+		fn := onAttackRegistry[ability]
 		fn(&unit, tile)
 	}
 }
 
 // Die -- Die with dignity and side effects
 func (unit Unit) Die(killer *Unit) {
-	for _, fn := range unit.OnDie {
+	for _, ability := range unit.OnDie {
+		fn := onDieRegistry[ability]
 		fn(&unit, killer)
 	}
 }
@@ -50,7 +53,8 @@ func (unit Unit) Die(killer *Unit) {
 // Strike -- Calculate pre-mitigation damage, and go through side effects of an attack
 func (unit Unit) Strike(target *Unit) int {
 	initialDamage := unit.Strength
-	for _, fn := range unit.OnStrike {
+	for _, ability := range unit.OnStrike {
+		fn := onStrikeRegistry[ability]
 		initialDamage = fn(&unit, target, initialDamage)
 	}
 	return initialDamage
@@ -59,7 +63,8 @@ func (unit Unit) Strike(target *Unit) int {
 // Struck -- Calculate post-mitigation damage, go through side effects
 func (unit Unit) Struck(attacker *Unit, damage int) {
 	damageReceived := damage
-	for _, fn := range unit.OnStruck {
+	for _, ability := range unit.OnStruck {
+		fn := onStruckRegistry[ability]
 		damageReceived = fn(&unit, attacker, damageReceived)
 	}
 	unit.TakeDamage(attacker, damageReceived)
@@ -86,14 +91,16 @@ func (unit Unit) TakeDamage(attacker *Unit, damage int) {
 
 // Kill -- Run when a unit kills another
 func (unit Unit) Kill(victim *Unit) {
-	for _, fn := range unit.OnKill {
+	for _, ability := range unit.OnKill {
+		fn := onKillRegistry[ability]
 		fn(&unit, victim)
 	}
 }
 
 // EndRound -- Run on end of round for per-turn effects
 func (unit Unit) EndRound() {
-	for _, fn := range unit.OnTurnEnd {
+	for _, ability := range unit.OnTurnEnd {
+		fn := onTurnEndRegistry[ability]
 		fn(&unit)
 	}
 	for _, condition := range unit.Conditions {

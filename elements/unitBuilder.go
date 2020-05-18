@@ -48,64 +48,20 @@ func BuildUnit(s string, team int) Unit {
 		Moxie:           t.Moxie,
 		AttackRange:     t.AttackRange,
 		MoveType:        t.MoveType,
-		OnAttack:        make(map[string]onAttack),
-		OnDie:           make(map[string]onDie),
-		OnKill:          make(map[string]onKill),
-		OnMove:          make(map[string]onMove),
-		OnStrike:        make(map[string]onStrike),
-		OnStruck:        make(map[string]onStruck),
-		OnTurnEnd:       make(map[string]onTurnEnd),
+		OnAttack:        t.OnAttack,
+		OnDie:           t.OnDie,
+		OnKill:          t.OnKill,
+		OnMove:          t.OnMove,
+		OnStrike:        t.OnStrike,
+		OnStruck:        t.OnStruck,
+		OnTurnEnd:       t.OnTurnEnd,
 		ActiveAbilities: make(map[string]ActiveAbility),
 		Conditions:      make(map[string]Condition),
 	}
 
-	for _, key := range t.OnAttack {
-		fn, ok := onAttackRegistry[key]
-		if ok == true {
-			unit.OnAttack[key] = fn
-		}
-	}
-
-	for _, key := range t.OnDie {
-		fn, ok := onDieRegistry[key]
-		if ok == true {
-			unit.OnDie[key] = fn
-		}
-	}
-
-	for _, key := range t.OnKill {
-		fn, ok := onKillRegistry[key]
-		if ok == true {
-			unit.OnKill[key] = fn
-		}
-	}
-
-	for _, key := range t.OnMove {
-		fn, ok := onMoveRegistry[key]
-		if ok == true {
-			unit.OnMove[key] = fn
-		}
-	}
-
-	for _, key := range t.OnStrike {
-		fn, ok := onStrikeRegistry[key]
-		if ok == true {
-			unit.OnStrike[key] = fn
-		}
-	}
-
-	for _, key := range t.OnStruck {
-		fn, ok := onStruckRegistry[key]
-		if ok == true {
-			unit.OnStruck[key] = fn
-		}
-	}
-
-	for _, key := range t.OnTurnEnd {
-		fn, ok := onTurnEndRegistry[key]
-		if ok == true {
-			unit.OnTurnEnd[key] = fn
-		}
+	for _, template := range t.ActiveAbilities {
+		builder := abilityRegistry[template.ID]
+		unit.ActiveAbilities[template.ID] = builder(template.Args...)
 	}
 
 	return unit

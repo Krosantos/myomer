@@ -16,7 +16,7 @@ type Poison struct {
 	turnsElapsed int
 }
 
-const poisonID = "Poison"
+const poisonID string = "Poison"
 
 func (p Poison) onAdd(unit *Unit)    {}
 func (p Poison) onRemove(unit *Unit) {}
