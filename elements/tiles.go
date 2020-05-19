@@ -50,6 +50,14 @@ func (t Board) Set(tile *Tile) {
 	t.Tiles[x][y] = tile
 }
 
+// These coordinates are currently magic numbers, apologies
+func (t Board) getLeftBase() *Tile {
+	return t.Get(-7, -3)
+}
+func (t Board) getRightBase() *Tile {
+	return t.Get(7, 4)
+}
+
 // Neighbours -- Get all neighbouring tiles
 func (t Tile) Neighbours() []*Tile {
 	result := []*Tile{}

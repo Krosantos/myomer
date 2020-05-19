@@ -15,6 +15,7 @@ type Unit struct {
 	AttackType      targetType
 	MoveType        moveType
 	Tile            *Tile
+	IsDead          bool
 	OnAttack        []string
 	OnDie           []string
 	OnKill          []string
@@ -44,6 +45,10 @@ func (unit Unit) Attack(tile *Tile) {
 
 // Die -- Die with dignity and side effects
 func (unit Unit) Die(killer *Unit) {
+	unit.Tile.Unit = nil
+	unit.Tile.Corpse = &unit
+	unit.IsDead = true
+
 	for _, ability := range unit.OnDie {
 		fn := onDieRegistry[ability]
 		fn(&unit, killer)
@@ -97,14 +102,14 @@ func (unit Unit) Kill(victim *Unit) {
 	}
 }
 
-// EndRound -- Run on end of round for per-turn effects
-func (unit Unit) EndRound() {
+// EndTurn -- Run on end of round for per-turn effects
+func (unit Unit) EndTurn() {
 	for _, ability := range unit.OnTurnEnd {
 		fn := onTurnEndRegistry[ability]
 		fn(&unit)
 	}
 	for _, condition := range unit.Conditions {
-		condition.onRoundEnd(&unit)
+		condition.onTurnEnd(&unit)
 	}
 }
 

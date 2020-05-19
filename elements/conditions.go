@@ -6,7 +6,7 @@ type Condition interface {
 	onRemove(*Unit)
 	id() string
 	duration() int
-	onRoundEnd(*Unit)
+	onTurnEnd(*Unit)
 }
 
 // Poison -- Take damage each turn
@@ -22,7 +22,7 @@ func (p Poison) onAdd(unit *Unit)    {}
 func (p Poison) onRemove(unit *Unit) {}
 func (p Poison) id() string          { return poisonID }
 func (p Poison) duration() int       { return p.length - p.turnsElapsed }
-func (p Poison) onRoundEnd(unit *Unit) {
+func (p Poison) onTurnEnd(unit *Unit) {
 	unit.TakeDamage(nil, p.strength)
 	p.turnsElapsed++
 	if p.turnsElapsed >= p.length {
