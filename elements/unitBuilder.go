@@ -5,29 +5,24 @@ import (
 )
 
 type unitTemplate struct {
-	Name            string            `json:"name"`
-	Cost            int               `json:"cost"`
-	Color           color             `json:"color"`
-	Strength        int               `json:"strength"`
-	Health          int               `json:"health"`
-	Speed           int               `json:"speed"`
-	Moxie           int               `json:"moxie"`
-	AttackRange     int               `json:"attackRange"`
-	AttackType      targetType        `json:"attackType"`
-	MoveType        moveType          `json:"moveType"`
-	OnAttack        []string          `json:"onAttack"`
-	OnDie           []string          `json:"onDie"`
-	OnKill          []string          `json:"onKill"`
-	OnMove          []string          `json:"onMove"`
-	OnStrike        []string          `json:"onStrike"`
-	OnStruck        []string          `json:"onStruck"`
-	OnTurnEnd       []string          `json:"onTurnEnd"`
-	ActiveAbilities []abilityTemplate `json:"activeAbilities"`
-}
-
-type abilityTemplate struct {
-	ID   string        `json:"id"`
-	Args []interface{} `json:"args"`
+	Name            string     `json:"name"`
+	Cost            int        `json:"cost"`
+	Color           color      `json:"color"`
+	Strength        int        `json:"strength"`
+	Health          int        `json:"health"`
+	Speed           int        `json:"speed"`
+	Moxie           int        `json:"moxie"`
+	AttackRange     int        `json:"attackRange"`
+	AttackType      targetType `json:"attackType"`
+	MoveType        moveType   `json:"moveType"`
+	OnAttack        []string   `json:"onAttack"`
+	OnDie           []string   `json:"onDie"`
+	OnKill          []string   `json:"onKill"`
+	OnMove          []string   `json:"onMove"`
+	OnStrike        []string   `json:"onStrike"`
+	OnStruck        []string   `json:"onStruck"`
+	OnTurnEnd       []string   `json:"onTurnEnd"`
+	ActiveAbilities []string   `json:"activeAbilities"`
 }
 
 // BuildUnit -- Given a JSON template, build a unit
@@ -55,13 +50,8 @@ func BuildUnit(s string, team int) Unit {
 		OnStrike:        t.OnStrike,
 		OnStruck:        t.OnStruck,
 		OnTurnEnd:       t.OnTurnEnd,
-		ActiveAbilities: make(map[string]ActiveAbility),
+		ActiveAbilities: t.ActiveAbilities,
 		Conditions:      make(map[string]Condition),
-	}
-
-	for _, template := range t.ActiveAbilities {
-		builder := abilityRegistry[template.ID]
-		unit.ActiveAbilities[template.ID] = builder(template.Args...)
 	}
 
 	return unit

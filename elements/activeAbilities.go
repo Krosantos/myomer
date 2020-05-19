@@ -7,31 +7,25 @@ type ActiveAbility interface {
 	activate(*Unit, *Tile)
 }
 
-var abilityRegistry = map[string]func(...interface{}) ActiveAbility{
-	poisonCloudID: buildPoisonCloud,
+var abilityRegistry map[string]ActiveAbility
+
+func init() {
+	abilityRegistry = map[string]ActiveAbility{
+
+		poisonCloudID: poisonCloud{},
+	}
 }
 
 const poisonCloudID = "AB_PoisonCloud"
 
 // poisonCloud -- yeet me mama like a wagon wheel
-type poisonCloud struct {
-	strength int
-}
+type poisonCloud struct{}
 
-func buildPoisonCloud(args ...interface{}) ActiveAbility {
-	lemon := args[0]
-	strength, ok := lemon.(int)
-	if ok == false {
-		println("FAILED FAILED FAILED")
-	}
-	return poisonCloud{strength}
-}
 func (f poisonCloud) targetIsValid(unit *Unit, tile *Tile) bool {
 	return true
 }
 func (f poisonCloud) activate(unit *Unit, tile *Tile) {
 	if tile.Unit != nil {
-		tile.Unit.Damage -= f.strength
 		poison := Poison{3, 1, 0}
 		tile.Unit.AddCondition(poison)
 	}

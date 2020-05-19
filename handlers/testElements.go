@@ -70,7 +70,7 @@ func postTest(c *gin.Context) {
 		"onRoundEnd": [],
 		"onStrike": [],
 		"onStruck": [],
-		"activeAbilities": []
+		"activeAbilities": ["AB_PoisonCloud"]
 	}`
 	unit := elements.BuildUnit(unitJSON, 0)
 	unit.Tile = &t0

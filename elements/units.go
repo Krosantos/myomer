@@ -22,7 +22,7 @@ type Unit struct {
 	OnStrike        []string
 	OnStruck        []string
 	OnTurnEnd       []string
-	ActiveAbilities map[string]ActiveAbility
+	ActiveAbilities []string
 	Conditions      map[string]Condition
 }
 
