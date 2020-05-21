@@ -1,13 +1,11 @@
 package matches
 
-import (
-	"github.com/krosantos/myomer/v2/elements"
-)
+import "github.com/krosantos/myomer/v2/game"
 
 // Match -- An in-progress match, with players, client connections, and a game
 type Match struct {
 	ID      string
-	Game    elements.Game
+	Game    game.Game
 	Players map[int]Player
 }
 

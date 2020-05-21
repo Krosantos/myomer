@@ -1,4 +1,4 @@
-package elements
+package game
 
 // abs -- go's default abs returns floats, and this is easier
 func abs(i int) int {
@@ -17,9 +17,9 @@ func shareSign(a int, b int) bool {
 }
 
 // Manhattan distance heuristic
-func (t *Tile) heuristic(d *Tile) int {
-	Δx := t.X - d.X
-	Δy := t.Y - d.Y
+func (t *tile) heuristic(d *tile) int {
+	Δx := t.x - d.x
+	Δy := t.y - d.y
 
 	if shareSign(Δx, Δy) {
 		return abs(Δx + Δy)
@@ -31,14 +31,14 @@ func (t *Tile) heuristic(d *Tile) int {
 }
 
 // getPassable --Determine whether it's possiblt to move into a tile, based on terrain, occupants, and unit movetype
-func getPassable(u *Unit, from *Tile, to *Tile) bool {
-	hasEnemy := to.Unit != nil && to.Unit.Team != u.Team
-	isTall := abs(from.Z-to.Z) > 1
-	isImpassable := to.Terrain == water || to.Terrain == void
+func getPassable(u *unit, from *tile, to *tile) bool {
+	hasEnemy := to.unit != nil && to.unit.team != u.team
+	isTall := abs(from.z-to.z) > 1
+	isImpassable := to.terrain == water || to.terrain == void
 
-	canPassEnemy := u.MoveType == flying || u.MoveType == teleport || u.MoveType == infiltrate
-	canPassTall := u.MoveType == flying || u.MoveType == teleport || u.MoveType == climb
-	canPassImpass := u.MoveType == flying || u.MoveType == teleport
+	canPassEnemy := u.moveType == flying || u.moveType == teleport || u.moveType == infiltrate
+	canPassTall := u.moveType == flying || u.moveType == teleport || u.moveType == climb
+	canPassImpass := u.moveType == flying || u.moveType == teleport
 
 	if hasEnemy && !canPassEnemy {
 		return false
@@ -54,30 +54,30 @@ func getPassable(u *Unit, from *Tile, to *Tile) bool {
 }
 
 // getCanEndOn -- Determine whether a given unit can legally end its turn on a given tile
-func getCanEndOn(u *Unit, t *Tile) bool {
-	isEmpty := t.Unit == nil
-	if t.Terrain == void || t.Terrain == water {
-		return u.MoveType == flying
+func getCanEndOn(u *unit, t *tile) bool {
+	isEmpty := t.unit == nil
+	if t.terrain == void || t.terrain == water {
+		return u.moveType == flying
 	}
 	return isEmpty
 }
 
 // getMovableTiles -- Get all tiles a unit can move to
-func getMovableTiles(u *Unit) map[*Tile]bool {
-	t := u.Tile
-	openList := map[*Tile]bool{t: true}
-	closedList := map[*Tile]bool{}
-	costDict := map[*Tile]int{t: 0}
-	result := map[*Tile]bool{}
+func getMovableTiles(u *unit) map[*tile]bool {
+	t := u.tile
+	openList := map[*tile]bool{t: true}
+	closedList := map[*tile]bool{}
+	costDict := map[*tile]int{t: 0}
+	result := map[*tile]bool{}
 
 	for len(openList) > 0 {
-		for tile := range openList {
-			for _, neighbour := range tile.Neighbours() {
-				costToMove := costDict[tile] + 1
-				hasMovesRemaining := costToMove <= u.Speed
+		for ot := range openList {
+			for _, neighbour := range ot.neighbours() {
+				costToMove := costDict[ot] + 1
+				hasMovesRemaining := costToMove <= u.speed
 				isOnNoLists := closedList[neighbour] != true && openList[neighbour] != true
 				// If it's not in the open or closed list, and you can move to it, add it to the open list, and the cost dictionary
-				if getPassable(u, tile, neighbour) && isOnNoLists && hasMovesRemaining {
+				if getPassable(u, ot, neighbour) && isOnNoLists && hasMovesRemaining {
 					openList[neighbour] = true
 					costDict[neighbour] = costToMove
 					if getCanEndOn(u, neighbour) {
@@ -89,28 +89,28 @@ func getMovableTiles(u *Unit) map[*Tile]bool {
 				}
 			}
 			// We've looked at all the neighbours, consign this tile to the closed list.
-			closedList[tile] = true
-			delete(openList, tile)
+			closedList[ot] = true
+			delete(openList, ot)
 		}
 	}
 	return result
 }
 
 // getMoveIsValid -- Return whether or not a given unit can move to a given tile.
-func getMoveIsValid(u *Unit, destination *Tile) bool {
-	t := u.Tile
-	openList := map[*Tile]bool{t: true}
-	closedList := map[*Tile]bool{}
-	costDict := map[*Tile]int{t: 0}
+func getMoveIsValid(u *unit, destination *tile) bool {
+	t := u.tile
+	openList := map[*tile]bool{t: true}
+	closedList := map[*tile]bool{}
+	costDict := map[*tile]int{t: 0}
 
 	for len(openList) > 0 {
-		for tile := range openList {
-			for _, neighbour := range tile.Neighbours() {
-				costToMove := costDict[tile] + 1
-				hasMovesRemaining := costToMove <= u.Speed
+		for ot := range openList {
+			for _, neighbour := range ot.neighbours() {
+				costToMove := costDict[ot] + 1
+				hasMovesRemaining := costToMove <= u.speed
 				isOnNoLists := closedList[neighbour] != true && openList[neighbour] != true
 				// If it's not in the open or closed list, and you can move to it, add it to the open list, and the cost dictionary
-				if getPassable(u, tile, neighbour) && isOnNoLists && hasMovesRemaining {
+				if getPassable(u, ot, neighbour) && isOnNoLists && hasMovesRemaining {
 					openList[neighbour] = true
 					costDict[neighbour] = costToMove
 					if getCanEndOn(u, neighbour) && neighbour == destination {
@@ -122,8 +122,8 @@ func getMoveIsValid(u *Unit, destination *Tile) bool {
 				}
 			}
 			// We've looked at all the neighbours, consign this tile to the closed list.
-			closedList[tile] = true
-			delete(openList, tile)
+			closedList[ot] = true
+			delete(openList, ot)
 		}
 	}
 	return false

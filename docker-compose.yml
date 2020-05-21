@@ -20,7 +20,7 @@ services:
             dockerfile: ./hmr.dockerfile
         volumes: 
             - ./main.go:/app/main.go
-            - ./elements:/app/elements/
+            - ./game:/app/game/
             - ./handlers:/app/handlers/
             - ./managers:/app/managers
         ports:

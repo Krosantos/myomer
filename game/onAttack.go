@@ -1,13 +1,13 @@
-package elements
+package game
 
-type onAttack func(*Unit, *Tile)
+type onAttack func(*unit, *tile)
 
 var onAttackRegistry map[string]onAttack
 
 func init() {
 	onAttackRegistry = map[string]onAttack{
-		"furyCutter": func(u *Unit, t *Tile) {
-			u.Strength++
+		"furyCutter": func(u *unit, t *tile) {
+			u.strength++
 		},
 	}
 }

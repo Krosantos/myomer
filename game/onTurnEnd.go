@@ -1,13 +1,13 @@
-package elements
+package game
 
-type onTurnEnd func(*Unit)
+type onTurnEnd func(*unit)
 
 var onTurnEndRegistry map[string]onTurnEnd
 
 func init() {
 	onTurnEndRegistry = map[string]onTurnEnd{
-		"regenerate": func(u *Unit) {
-			u.HealDamage(1)
+		"regenerate": func(u *unit) {
+			u.healDamage(1)
 		},
 	}
 

@@ -1,4 +1,4 @@
-package elements
+package game
 
 import (
 	"encoding/json"
@@ -25,34 +25,34 @@ type unitTemplate struct {
 	ActiveAbilities []string   `json:"activeAbilities"`
 }
 
-// BuildUnit -- Given a JSON template, build a unit
-func BuildUnit(s string, team int) Unit {
+// buildUnit -- Given a JSON template, build a unit
+func buildUnit(s string, team int) unit {
 	var t unitTemplate
 	err := json.Unmarshal([]byte(s), &t)
 	if err != nil {
 		panic(err)
 	}
-	unit := Unit{
-		Name:            t.Name,
-		Team:            team,
-		Cost:            t.Cost,
-		Color:           t.Color,
-		Strength:        t.Strength,
-		Health:          t.Health,
-		Speed:           t.Speed,
-		Moxie:           t.Moxie,
-		AttackRange:     t.AttackRange,
-		MoveType:        t.MoveType,
-		OnAttack:        t.OnAttack,
-		OnDie:           t.OnDie,
-		OnKill:          t.OnKill,
-		OnMove:          t.OnMove,
-		OnStrike:        t.OnStrike,
-		OnStruck:        t.OnStruck,
-		OnTurnEnd:       t.OnTurnEnd,
-		ActiveAbilities: t.ActiveAbilities,
-		Conditions:      make(map[string]Condition),
+	result := unit{
+		name:            t.Name,
+		team:            team,
+		cost:            t.Cost,
+		color:           t.Color,
+		strength:        t.Strength,
+		health:          t.Health,
+		speed:           t.Speed,
+		moxie:           t.Moxie,
+		attackRange:     t.AttackRange,
+		moveType:        t.MoveType,
+		onAttack:        t.OnAttack,
+		onDie:           t.OnDie,
+		onKill:          t.OnKill,
+		onMove:          t.OnMove,
+		onStrike:        t.OnStrike,
+		onStruck:        t.OnStruck,
+		onTurnEnd:       t.OnTurnEnd,
+		activeAbilities: t.ActiveAbilities,
+		conditions:      make(map[string]Condition),
 	}
 
-	return unit
+	return result
 }

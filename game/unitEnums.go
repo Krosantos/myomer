@@ -1,4 +1,4 @@
-package elements
+package game
 
 type moveType string
 
