@@ -71,6 +71,19 @@ func (manager *ClientManager) send(client *Client) {
 		}
 	}
 }
+func (client *Client) receive() {
+	for {
+		message := make([]byte, 4096)
+		length, err := client.socket.Read(message)
+		if err != nil {
+			client.socket.Close()
+			break
+		}
+		if length > 0 {
+			fmt.Println("RECEIVED: " + string(message))
+		}
+	}
+}
 
 // ListenForMatches -- Spin up a listener and a client manager and chilllll
 func ListenForMatches() {
@@ -78,7 +91,6 @@ func ListenForMatches() {
 	if error != nil {
 		panic("SOCKET DEATH")
 	}
-	println("YEET")
 	manager := ClientManager{
 		clients:    make(map[*Client]bool),
 		broadcast:  make(chan []byte),

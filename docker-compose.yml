@@ -25,6 +25,7 @@ services:
             - ./managers:/app/managers
         ports:
             - 3000:3000
+            - 4500:4500
         depends_on: 
             - db
         env_file: ./.env
