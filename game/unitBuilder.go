@@ -1,8 +1,12 @@
 package game
 
 import (
-	"encoding/json"
+	"github.com/google/uuid"
 )
+
+type army struct {
+	Units map[int]unitTemplate `json:"units"`
+}
 
 type unitTemplate struct {
 	Name            string     `json:"name"`
@@ -25,14 +29,16 @@ type unitTemplate struct {
 	ActiveAbilities []string   `json:"activeAbilities"`
 }
 
-// buildUnit -- Given a JSON template, build a unit
-func buildUnit(s string, team int) unit {
-	var t unitTemplate
-	err := json.Unmarshal([]byte(s), &t)
-	if err != nil {
-		panic(err)
-	}
+// Currently, there are 19 eligible tiles a unit can start on on either side. This function maps those to a tile coordinate, based on team.
+func getUnitTile(pos int, team int, b *board) *tile {
+	coord := positionToTile[team][pos]
+	return b.get(coord.x, coord.y)
+}
+
+// buildUnit -- Given a unit template, team, and tile, build a unit
+func buildUnit(t unitTemplate, team int, tile *tile) unit {
 	result := unit{
+		id:              uuid.New().String(),
 		name:            t.Name,
 		team:            team,
 		cost:            t.Cost,
@@ -43,6 +49,7 @@ func buildUnit(s string, team int) unit {
 		moxie:           t.Moxie,
 		attackRange:     t.AttackRange,
 		moveType:        t.MoveType,
+		tile:            tile,
 		onAttack:        t.OnAttack,
 		onDie:           t.OnDie,
 		onKill:          t.OnKill,
@@ -53,6 +60,52 @@ func buildUnit(s string, team int) unit {
 		activeAbilities: t.ActiveAbilities,
 		conditions:      make(map[string]Condition),
 	}
+	tile.unit = &result
 
 	return result
+}
+
+var positionToTile map[int]map[int]coord = map[int]map[int]coord{
+	0: {
+		0:  {-6, 0},
+		1:  {-6, -1},
+		2:  {-6, -2},
+		3:  {-6, -3},
+		4:  {-6, -4},
+		5:  {-6, -5},
+		6:  {-5, 1},
+		7:  {-5, 0},
+		8:  {-5, -1},
+		9:  {-5, -2},
+		10: {-5, -3},
+		11: {-5, -4},
+		12: {-5, -5},
+		13: {-4, 1},
+		14: {-4, 0},
+		15: {-4, -1},
+		16: {-4, -2},
+		17: {-4, -3},
+		18: {-4, -4},
+	},
+	1: {
+		0:  {6, 6},
+		1:  {6, 5},
+		2:  {6, 4},
+		3:  {6, 3},
+		4:  {6, 2},
+		5:  {6, 1},
+		6:  {5, 6},
+		7:  {5, 5},
+		8:  {5, 4},
+		9:  {5, 3},
+		10: {5, 2},
+		11: {5, 1},
+		12: {5, 0},
+		13: {4, 5},
+		14: {4, 4},
+		15: {4, 3},
+		16: {4, 2},
+		17: {4, 1},
+		18: {4, 0},
+	},
 }

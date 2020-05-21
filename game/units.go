@@ -2,6 +2,7 @@ package game
 
 // unit -- A combat unit/board piece
 type unit struct {
+	id              string
 	name            string
 	team            int
 	cost            int

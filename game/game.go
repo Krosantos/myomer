@@ -1,9 +1,36 @@
 package game
 
+import "encoding/json"
+
 // Game -- An individual game in memory, with a board, units, and players
 type Game struct {
-	Board board
-	units []unit
+	board      *board
+	units      map[string]unit
+	activeUnit *unit
+}
+
+// BuildGame -- Create a new game state with the provided armies
+func BuildGame() Game {
+	b := getDefaultBoard()
+	return Game{
+		board:      &b,
+		units:      make(map[string]unit),
+		activeUnit: nil,
+	}
+}
+
+// PopulateArmy -- Given a JSON template and a board, fill it with an army
+func (g Game) PopulateArmy(s string, team int) {
+	var a army
+	err := json.Unmarshal([]byte(s), &a)
+	if err != nil {
+		panic(err)
+	}
+	for pos, template := range a.Units {
+		tile := getUnitTile(pos, team, g.board)
+		unit := buildUnit(template, team, tile)
+		g.units[unit.id] = unit
+	}
 }
 
 // getUnitsForPlayer -- Get all units for a given player
@@ -34,8 +61,8 @@ func (g *Game) endRound() {
 		c.endTurn()
 	}
 
-	leftBase := g.Board.getLeftBase()
-	rightBase := g.Board.getRightBase()
+	leftBase := g.board.getLeftBase()
+	rightBase := g.board.getRightBase()
 
 	if leftBase.unit != nil && leftBase.unit.team != 0 {
 		print("Victory kinda")
