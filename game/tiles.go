@@ -41,11 +41,11 @@ func (b board) set(t *tile) {
 	x := t.x
 	y := t.y
 	if b.tiles == nil {
-		b.tiles = make(map[int]map[int]*tile)
+		b.tiles = map[int]map[int]*tile{}
 	}
 	_, exists := b.tiles[x]
 	if exists == false {
-		b.tiles[x] = make(map[int]*tile)
+		b.tiles[x] = map[int]*tile{}
 	}
 	b.tiles[x][y] = t
 }
