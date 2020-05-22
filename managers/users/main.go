@@ -10,7 +10,7 @@ import (
 
 // User -- an individual in the DB
 type User struct {
-	ID        int64     `json:"id"`
+	ID        int       `json:"id"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
