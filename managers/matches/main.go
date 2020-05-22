@@ -3,8 +3,6 @@ package matches
 import (
 	"fmt"
 	"net"
-
-	"github.com/krosantos/myomer/v2/game"
 )
 
 // Client -- The bit that sends and receives data
@@ -89,33 +87,6 @@ func (client *Client) receive() {
 
 // ListenForMatches -- Spin up a listener and a client manager and chilllll
 func ListenForMatches() {
-
-	game := game.BuildGame()
-	army := `{
-		"units": {
-			"0": {
-				"name": "Horse Guy",
-				"cost": 50,
-				"color": "red",
-				"strength": 3,
-				"health": 2,
-				"speed": 3,
-				"moxie": 40,
-				"attackRange": 1,
-				"attackType": "melee",
-				"moveType": "basic",
-				"onAttack": [],
-				"onDie": [],
-				"onKill": [],
-				"onMove": [],
-				"onStrike": [],
-				"onStruck": [],
-				"onTurnEnd": [],
-				"activeAbilities": []
-			}
-		}
-	}`
-	game.PopulateArmy(army, 1)
 
 	listener, error := net.Listen("tcp", ":4500")
 	if error != nil {
