@@ -1,8 +1,11 @@
 package sockets
 
 import (
+	"encoding/json"
 	"net"
 	"time"
+
+	"github.com/krosantos/myomer/v2/auth"
 )
 
 type foyer struct {
@@ -38,8 +41,32 @@ func (f foyer) prune(d time.Duration) {
 
 // receive -- Parse and act on messages from held clients
 func (f foyer) receive(c *client) {
+	abort := func() {
+		f.remove <- c
+		c.conn.Close()
+	}
 	for {
-
+		raw := make([]byte, 4096)
+		_, err := c.conn.Read(raw)
+		if err != nil {
+			abort()
+			break
+		}
+		m := foyerMessage{}
+		err = json.Unmarshal(raw, &m)
+		if err != nil {
+			abort()
+			break
+		}
+		if auth.JwtMatchesUser(m.Auth, m.UserID) == false {
+			abort()
+			break
+		}
+		if m.Action == "matchmake" {
+			println("MATCH ME")
+		} else if m.Action == "reconnect" {
+			println("RECONNECT")
+		}
 	}
 }
 
@@ -48,6 +75,7 @@ type foyerMessage struct {
 	Auth   string `json:"auth"`
 	UserID string `json:"userId"`
 	ArmyID string `json:"armyId"`
+	GameID string `json:"gameId"`
 }
 
 // Instantiate -- Start up the cluster of sockets and structures designed to wrangle them.
@@ -67,5 +95,6 @@ func Instantiate() {
 		conn, _ := listener.Accept()
 		client := &client{conn: conn, data: make(chan []byte)}
 		foyer.register <- client
+		go foyer.receive(client)
 	}
 }

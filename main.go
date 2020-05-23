@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/krosantos/myomer/v2/handlers"
-	"github.com/krosantos/myomer/v2/managers/matches"
+	"github.com/krosantos/myomer/v2/sockets"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer pool.Close()
-	go matches.ListenForMatches()
+	go sockets.Instantiate()
 
 	router := handlers.PrepareRouter(pool)
 	router.Run(os.Getenv("PORT"))
