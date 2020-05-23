@@ -23,6 +23,8 @@ services:
             - ./game:/app/game/
             - ./handlers:/app/handlers/
             - ./managers:/app/managers
+            - ./sockets:/app/sockets
+            - ./auth:/app/auth
         ports:
             - 3000:3000
             - 4500:4500

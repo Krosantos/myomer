@@ -46,12 +46,12 @@ func JwtIsValid(rawToken string) (map[string]interface{}, error) {
 }
 
 // JwtMatchesUser -- Convenience method to ensure a JWT is valid, and has a userId claim which matches the passed userId
-func JwtMatchesUser(rawToken string, userID int) bool {
+func JwtMatchesUser(rawToken string, userID string) bool {
 	claims, err := JwtIsValid(rawToken)
 	if err != nil {
 		return false
 	}
-	foundID, ok := claims["userId"].(int)
+	foundID, ok := claims["userId"].(string)
 	return ok && foundID == userID
 
 }
