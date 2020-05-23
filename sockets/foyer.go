@@ -8,17 +8,34 @@ import (
 )
 
 type foyer struct {
-	clients  map[*client]time.Time
-	register chan *client
-	remove   chan *client
+	matchmaking *matchmaking
+	clients     map[*client]time.Time
+	register    chan *client
+	remove      chan *client
 }
 
-// start -- Start the foyer, which will listen to register/remove clients
-func (f foyer) start() {
+// makeFoyer -- Instantiate a new foyer instance, and set it in motion
+func makeFoyer(mm *matchmaking) *foyer {
+	foyer := foyer{
+		matchmaking: mm,
+		clients:     make(map[*client]time.Time),
+		register:    make(chan *client),
+		remove:      make(chan *client),
+	}
+
+	go foyer.listen()
+	go foyer.prune(time.Second * time.Duration(5))
+
+	return &foyer
+}
+
+// listen -- Listen to register/remove clients
+func (f foyer) listen() {
 	for {
 		select {
 		case c := <-f.register:
 			f.clients[c] = time.Now()
+			go f.receive(c)
 		case c := <-f.remove:
 			delete(f.clients, c)
 		}
@@ -31,39 +48,44 @@ func (f foyer) prune(d time.Duration) {
 		for client, t := range f.clients {
 			ttl := t.Add(time.Second * time.Duration(30))
 			if time.Now().After(ttl) {
-				f.remove <- client
-				client.conn.Close()
+				f.deregister(client, true)
 			}
 		}
 	}
 }
 
-// receive -- Parse and act on messages from held clients
-func (f foyer) receive(c *client) {
-	abort := func() {
-		f.remove <- c
+// deregister -- cleanly remove a client from the foyer, optionally killing it
+func (f foyer) deregister(c *client, kill bool) {
+	if kill == true {
 		c.conn.Close()
 	}
+	f.remove <- c
+}
+
+// receive -- Parse and act on messages from held clients
+func (f foyer) receive(c *client) {
 	for {
 		bloat := make([]byte, 4096)
 		len, err := c.conn.Read(bloat)
 		raw := bloat[:len]
 		if err != nil {
-			abort()
+			f.deregister(c, true)
 			break
 		}
 		m := foyerMessage{}
 		err = json.Unmarshal(raw, &m)
 		if err != nil {
-			abort()
+			f.deregister(c, true)
 			break
 		}
 		if auth.JwtMatchesUser(m.Auth, m.UserID) == false {
-			abort()
+			f.deregister(c, true)
 			break
 		}
 		if m.Action == "matchmake" {
-			println("MATCH ME")
+			f.deregister(c, false)
+			f.matchmaking.enqueue(c, m.UserID, m.ArmyID)
+			break
 		} else if m.Action == "reconnect" {
 			println("RECONNECT")
 		}

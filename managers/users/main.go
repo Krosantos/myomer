@@ -27,6 +27,13 @@ func FindUserByEmail(pool *pgxpool.Pool, email string) (User, error) {
 	return user, err
 }
 
+// FindUserByID -- Acquire a single User based on id
+func FindUserByID(pool *pgxpool.Pool, id string) (User, error) {
+	user := User{}
+	err := pool.QueryRow(context.Background(), "select * from users where id = $1", id).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Elo, &user.CreatedAt, &user.UpdatedAt)
+	return user, err
+}
+
 // ValidateLogin -- Confirm login with a given email and plaintext password
 func ValidateLogin(pool *pgxpool.Pool, email string, plaintext string) bool {
 	var hash string

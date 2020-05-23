@@ -1,39 +1,25 @@
 package game
 
-// abs -- go's default abs returns floats, and this is easier
-func abs(i int) int {
-	if i < 0 {
-		return -1 * i
-	}
-	return i
-}
-
-// shareSign -- See if two ints share a sign
-func shareSign(a int, b int) bool {
-	if a < 0 {
-		return b < 0
-	}
-	return b >= 0
-}
+import "github.com/krosantos/myomer/v2/maff"
 
 // Manhattan distance heuristic
 func (t *tile) heuristic(d *tile) int {
 	Δx := t.x - d.x
 	Δy := t.y - d.y
 
-	if shareSign(Δx, Δy) {
-		return abs(Δx + Δy)
+	if maff.ShareSign(Δx, Δy) {
+		return maff.Abs(Δx + Δy)
 	}
-	if abs(Δx) > abs(Δy) {
-		return abs(Δx)
+	if maff.Abs(Δx) > maff.Abs(Δy) {
+		return maff.Abs(Δx)
 	}
-	return abs(Δy)
+	return maff.Abs(Δy)
 }
 
 // getPassable --Determine whether it's possiblt to move into a tile, based on terrain, occupants, and unit movetype
 func getPassable(u *unit, from *tile, to *tile) bool {
 	hasEnemy := to.unit != nil && to.unit.team != u.team
-	isTall := abs(from.z-to.z) > 1
+	isTall := maff.Abs(from.z-to.z) > 1
 	isImpassable := to.terrain == water || to.terrain == void
 
 	canPassEnemy := u.moveType == flying || u.moveType == teleport || u.moveType == infiltrate
