@@ -1,6 +1,7 @@
 package sockets
 
 import (
+	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -10,6 +11,7 @@ import (
 type matchmaking struct {
 	gameManager *gameManager
 	pool        *pgxpool.Pool
+	lock        *sync.Mutex
 	candidates  map[*matchCandidate]bool
 	register    chan *matchCandidate
 	remove      chan *matchCandidate
@@ -29,6 +31,7 @@ func makeMatchMaking(gm *gameManager, pool *pgxpool.Pool) *matchmaking {
 	mm := matchmaking{
 		gameManager: gm,
 		pool:        pool,
+		lock:        &sync.Mutex{},
 		candidates:  make(map[*matchCandidate]bool),
 		register:    make(chan *matchCandidate),
 		remove:      make(chan *matchCandidate),
@@ -43,9 +46,13 @@ func (m matchmaking) listen() {
 	for {
 		select {
 		case mc := <-m.register:
+			m.lock.Lock()
 			m.candidates[mc] = true
+			m.lock.Unlock()
 		case mc := <-m.remove:
+			m.lock.Lock()
 			delete(m.candidates, mc)
+			m.lock.Unlock()
 		}
 	}
 }
@@ -56,24 +63,34 @@ func (m matchmaking) match() {
 	// and optimization, and fun. For now, just repeatedly pluck the top
 	// two candidates.
 	var cc *matchCandidate
-	for {
+	for range time.Tick(time.Second * time.Duration(1)) {
+		m.lock.Lock()
+		candidatesToClear := []*matchCandidate{}
 		for mc := range m.candidates {
 			if cc == nil {
 				cc = mc
 			}
 			if cc != mc {
 				// Match found, baby! ezpz
-				m.buildMatch(cc, mc)
+				println("Got a match")
+				err := m.buildMatch(cc, mc)
+				if err == nil {
+					candidatesToClear = append(candidatesToClear, cc, mc)
+				}
 			}
+		}
+		m.lock.Unlock()
+		for _, mc := range candidatesToClear {
+			m.remove <- mc
 		}
 	}
 }
 
 // enqueue -- Attempt to enqueue a user, and a client, into matchmaking. Returns bool of success.
-func (m matchmaking) enqueue(c *client, uid string, aid string) bool {
+func (m matchmaking) enqueue(c *client, uid string, aid string) error {
 	u, err := users.FindUserByID(m.pool, uid)
 	if err != nil {
-		return false
+		return err
 	}
 	mc := &matchCandidate{
 		uid:    u.ID,
@@ -84,7 +101,7 @@ func (m matchmaking) enqueue(c *client, uid string, aid string) bool {
 		client: c,
 	}
 	m.register <- mc
-	return true
+	return nil
 }
 
 //  cancel -- Remove a user from queue when they stop looking for a match
@@ -94,7 +111,8 @@ func (m matchmaking) cancel(mc *matchCandidate) {
 }
 
 // buildMatch -- Once a match is made, alert players, and pass them off to the game manager
-func (m matchmaking) buildMatch(p1 *matchCandidate, p2 *matchCandidate) {
+func (m matchmaking) buildMatch(p1 *matchCandidate, p2 *matchCandidate) error {
 	p1.client.conn.Write([]byte("MATCH FOUND"))
 	p2.client.conn.Write([]byte("MATCH FOUND"))
+	return nil
 }

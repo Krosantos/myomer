@@ -3,8 +3,6 @@ package sockets
 import (
 	"encoding/json"
 	"time"
-
-	"github.com/krosantos/myomer/v2/auth"
 )
 
 type foyer struct {
@@ -78,13 +76,15 @@ func (f foyer) receive(c *client) {
 			f.deregister(c, true)
 			break
 		}
-		if auth.JwtMatchesUser(m.Auth, m.UserID) == false {
-			f.deregister(c, true)
-			break
-		}
+		// if auth.JwtMatchesUser(m.Auth, m.UserID) == false {
+		// 	f.deregister(c, true)
+		// 	break
+		// }
 		if m.Action == "matchmake" {
-			f.deregister(c, false)
-			f.matchmaking.enqueue(c, m.UserID, m.ArmyID)
+			err := f.matchmaking.enqueue(c, m.UserID, m.ArmyID)
+			if err == nil {
+				f.deregister(c, false)
+			}
 			break
 		} else if m.Action == "reconnect" {
 			println("RECONNECT")

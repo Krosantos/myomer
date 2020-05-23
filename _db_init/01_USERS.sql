@@ -12,7 +12,7 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (id, username, email, password, elo, created_at, updated_at) 
-VALUES (uuid_generate_v4(), 'Krosantos', 'tymko.tecca@gmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());
+VALUES ('0dde213a-a81b-4b02-a665-41ec6c037112', 'Krosantos', 'tymko.tecca@gmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());
 
 INSERT INTO users (id, username, email, password, elo, created_at, updated_at) 
 VALUES (uuid_generate_v4(), 'Ramira', 'rgutierrez@gmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());
