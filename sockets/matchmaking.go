@@ -41,7 +41,7 @@ func makeMatchMaking(gm *gameManager, pool *pgxpool.Pool) *matchmaking {
 	return &mm
 }
 
-// listen -- Continuously listen for stuff
+// listen -- Continuously listen for candidates to enqueue/dequeue
 func (m matchmaking) listen() {
 	for {
 		select {
@@ -49,6 +49,7 @@ func (m matchmaking) listen() {
 			m.lock.Lock()
 			m.candidates[mc] = true
 			m.lock.Unlock()
+			go m.receive(mc)
 		case mc := <-m.remove:
 			m.lock.Lock()
 			delete(m.candidates, mc)
@@ -62,27 +63,23 @@ func (m matchmaking) match() {
 	// In the future, this is an entire sub-project's worth of thinking,
 	// and optimization, and fun. For now, just repeatedly pluck the top
 	// two candidates.
-	var cc *matchCandidate
 	for range time.Tick(time.Second * time.Duration(1)) {
+		var cc *matchCandidate
 		m.lock.Lock()
-		candidatesToClear := []*matchCandidate{}
 		for mc := range m.candidates {
 			if cc == nil {
 				cc = mc
 			}
 			if cc != mc {
 				// Match found, baby! ezpz
-				println("Got a match")
 				err := m.buildMatch(cc, mc)
 				if err == nil {
-					candidatesToClear = append(candidatesToClear, cc, mc)
+					m.remove <- cc
+					m.remove <- mc
 				}
 			}
 		}
 		m.lock.Unlock()
-		for _, mc := range candidatesToClear {
-			m.remove <- mc
-		}
 	}
 }
 
@@ -101,13 +98,32 @@ func (m matchmaking) enqueue(c *client, uid string, aid string) error {
 		client: c,
 	}
 	m.register <- mc
+	mc.client.conn.Write([]byte("Enqueued"))
 	return nil
+}
+
+// receive -- Listen for incoming client messages
+func (m matchmaking) receive(mc *matchCandidate) {
+	for {
+		bloat := make([]byte, 4096)
+		len, err := mc.client.conn.Read(bloat)
+		if err != nil {
+			m.cancel(mc)
+			break
+		}
+		raw := bloat[:len]
+		s := string(raw)
+		if s == "cancel" {
+			m.cancel(mc)
+			break
+		}
+	}
 }
 
 //  cancel -- Remove a user from queue when they stop looking for a match
 func (m matchmaking) cancel(mc *matchCandidate) {
-	m.remove <- mc
 	mc.client.conn.Close()
+	m.remove <- mc
 }
 
 // buildMatch -- Once a match is made, alert players, and pass them off to the game manager

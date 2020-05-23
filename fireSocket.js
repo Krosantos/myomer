@@ -12,10 +12,14 @@ const mmm = {
 conn.on('connect', () => {
     console.log('I connected!')
     conn.write(JSON.stringify(mmm))
+    // setTimeout(() => {
+    //     console.log("Asking politely to cancel matchmaking")
+    //     conn.write("cancel")
+    // }, 1000);
 })
 
 conn.on("close", () => {
-    console.log('I AM CLOSE')
+    console.log('Socket Killed')
 })
 
 conn.on("end", () => {

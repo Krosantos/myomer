@@ -2,11 +2,13 @@ package sockets
 
 import (
 	"encoding/json"
+	"sync"
 	"time"
 )
 
 type foyer struct {
 	matchmaking *matchmaking
+	lock        *sync.Mutex
 	clients     map[*client]time.Time
 	register    chan *client
 	remove      chan *client
@@ -16,6 +18,7 @@ type foyer struct {
 func makeFoyer(mm *matchmaking) *foyer {
 	foyer := foyer{
 		matchmaking: mm,
+		lock:        &sync.Mutex{},
 		clients:     make(map[*client]time.Time),
 		register:    make(chan *client),
 		remove:      make(chan *client),
@@ -32,10 +35,14 @@ func (f foyer) listen() {
 	for {
 		select {
 		case c := <-f.register:
+			f.lock.Lock()
 			f.clients[c] = time.Now()
+			f.lock.Unlock()
 			go f.receive(c)
 		case c := <-f.remove:
+			f.lock.Lock()
 			delete(f.clients, c)
+			f.lock.Unlock()
 		}
 	}
 }
@@ -43,12 +50,14 @@ func (f foyer) listen() {
 // prune -- If a client's been in the foyer for too long, kill 'em.
 func (f foyer) prune(d time.Duration) {
 	for range time.Tick(d) {
+		f.lock.Lock()
 		for client, t := range f.clients {
 			ttl := t.Add(time.Second * time.Duration(30))
 			if time.Now().After(ttl) {
 				f.deregister(client, true)
 			}
 		}
+		f.lock.Unlock()
 	}
 }
 
