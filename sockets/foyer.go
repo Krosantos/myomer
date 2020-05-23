@@ -21,7 +21,6 @@ func (f foyer) start() {
 		case c := <-f.register:
 			f.clients[c] = time.Now()
 		case c := <-f.remove:
-			close(c.data)
 			delete(f.clients, c)
 		}
 	}
@@ -34,6 +33,7 @@ func (f foyer) prune(d time.Duration) {
 			ttl := t.Add(time.Second * time.Duration(30))
 			if time.Now().After(ttl) {
 				f.remove <- client
+				client.conn.Close()
 			}
 		}
 	}
@@ -46,8 +46,9 @@ func (f foyer) receive(c *client) {
 		c.conn.Close()
 	}
 	for {
-		raw := make([]byte, 4096)
-		_, err := c.conn.Read(raw)
+		bloat := make([]byte, 4096)
+		len, err := c.conn.Read(bloat)
+		raw := bloat[:len]
 		if err != nil {
 			abort()
 			break
