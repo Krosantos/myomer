@@ -6,7 +6,7 @@ const mmm = {
     "type": "matchmake",
     "auth": "None, RIP",
     "userId": "0dde213a-a81b-4b02-a665-41ec6c037112",
-    "armyId": "GOOD_ARMY",
+    "armyId": "fabc3e24-5dca-47f4-86ba-b3e504de4ccb",
 }
 
 conn.on('connect', () => {

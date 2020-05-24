@@ -1,6 +1,7 @@
 package socket
 
 import (
+	"errors"
 	"sync"
 	"time"
 
@@ -88,6 +89,13 @@ func (m matchmaking) enqueue(c *client, uid string, aid string) error {
 	u, err := manager.FindUserByID(m.pool, uid)
 	if err != nil {
 		return err
+	}
+	a, err := manager.FindArmyByID(m.pool, aid)
+	if err != nil {
+		return err
+	}
+	if a.UserID != uid {
+		return errors.New("Unowned Army")
 	}
 	mc := &matchCandidate{
 		uid:    u.ID,
