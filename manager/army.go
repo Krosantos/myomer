@@ -11,6 +11,7 @@ import (
 type Army struct {
 	ID        string    `json:"id"`
 	UserID    string    `json:"userId"`
+	Name      string    `json:"name"`
 	Cohort    string    `json:"cohort"`
 	Auxiliary string    `json:"auxiliary"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -20,6 +21,6 @@ type Army struct {
 // FindArmyByID -- Acquire a single Army based on ID
 func FindArmyByID(pool *pgxpool.Pool, aid string) (Army, error) {
 	army := Army{}
-	err := pool.QueryRow(context.Background(), "select * from armies where id = $1", aid).Scan(&army.ID, &army.UserID, &army.Cohort, &army.Auxiliary, &army.CreatedAt, &army.UpdatedAt)
+	err := pool.QueryRow(context.Background(), "select * from armies where id = $1", aid).Scan(&army.ID, &army.UserID, &army.Name, &army.Cohort, &army.Auxiliary, &army.CreatedAt, &army.UpdatedAt)
 	return army, err
 }

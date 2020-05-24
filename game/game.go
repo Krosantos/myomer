@@ -10,9 +10,9 @@ type Game struct {
 }
 
 // BuildGame -- Create a new game state with the provided armies
-func BuildGame() Game {
+func BuildGame() *Game {
 	b := getDefaultBoard()
-	return Game{
+	return &Game{
 		board:      &b,
 		units:      make(map[string]unit),
 		activeUnit: nil,

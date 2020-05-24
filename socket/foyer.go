@@ -74,11 +74,11 @@ func (f foyer) receive(c *client) {
 	for {
 		bloat := make([]byte, 4096)
 		len, err := c.conn.Read(bloat)
-		raw := bloat[:len]
 		if err != nil {
 			f.deregister(c, true)
 			break
 		}
+		raw := bloat[:len]
 		m := foyerMessage{}
 		err = json.Unmarshal(raw, &m)
 		if err != nil {

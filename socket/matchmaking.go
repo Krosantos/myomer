@@ -73,7 +73,7 @@ func (m matchmaking) match() {
 			}
 			if cc != mc {
 				// Match found, baby! ezpz
-				err := m.buildMatch(cc, mc)
+				err := m.gameManager.buildMatch(cc, mc)
 				if err == nil {
 					m.remove <- cc
 					m.remove <- mc
@@ -132,11 +132,4 @@ func (m matchmaking) receive(mc *matchCandidate) {
 func (m matchmaking) cancel(mc *matchCandidate) {
 	mc.client.conn.Close()
 	m.remove <- mc
-}
-
-// buildMatch -- Once a match is made, alert players, and pass them off to the game manager
-func (m matchmaking) buildMatch(p1 *matchCandidate, p2 *matchCandidate) error {
-	p1.client.conn.Write([]byte("MATCH FOUND"))
-	p2.client.conn.Write([]byte("MATCH FOUND"))
-	return nil
 }

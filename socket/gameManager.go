@@ -1,7 +1,12 @@
 package socket
 
 import (
+	"sync"
+
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/krosantos/myomer/v2/game"
+	"github.com/krosantos/myomer/v2/manager"
 )
 
 type gameManager struct {
@@ -37,6 +42,37 @@ func (gm gameManager) start() {
 
 // buildMatch -- given two successfully matched users, set up a game.
 func (gm gameManager) buildMatch(mc1 *matchCandidate, mc2 *matchCandidate) error {
+	match := &match{
+		id:      uuid.New().String(),
+		lock:    &sync.Mutex{},
+		game:    game.BuildGame(),
+		players: make(map[string]*player),
+	}
+	p1 := &player{
+		id:     mc1.uid,
+		name:   mc1.name,
+		team:   0,
+		client: mc1.client,
+	}
+	p2 := &player{
+		id:     mc2.uid,
+		name:   mc2.name,
+		team:   1,
+		client: mc2.client,
+	}
+	p1a, err := manager.FindArmyByID(gm.pool, mc1.aid)
+	if err != nil {
+		return err
+	}
+	p2a, err := manager.FindArmyByID(gm.pool, mc2.aid)
+	if err != nil {
+		return err
+	}
+
+	match.game.PopulateArmy(p1a.Cohort, 0)
+	match.game.PopulateArmy(p2a.Cohort, 1)
+	match.addPlayer(p1)
+	match.addPlayer(p2)
 
 	return nil
 }
