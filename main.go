@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/krosantos/myomer/v2/handlers"
-	"github.com/krosantos/myomer/v2/sockets"
+	"github.com/krosantos/myomer/v2/handler"
+	"github.com/krosantos/myomer/v2/socket"
 )
 
 func main() {
@@ -18,9 +18,9 @@ func main() {
 		os.Exit(1)
 	}
 	defer pool.Close()
-	go sockets.Instantiate(pool)
+	go socket.Instantiate(pool)
 
-	router := handlers.PrepareRouter(pool)
+	router := handler.PrepareRouter(pool)
 	router.Run(os.Getenv("PORT"))
 
 }

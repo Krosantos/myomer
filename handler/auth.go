@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/krosantos/myomer/v2/auth"
-	"github.com/krosantos/myomer/v2/managers/users"
+	"github.com/krosantos/myomer/v2/manager"
 )
 
 type loginRequestData struct {
@@ -38,11 +38,11 @@ func postLogin(c *gin.Context) {
 		c.AbortWithError(400, bindErr)
 	}
 	dbPool := c.MustGet(cxtDbPool).(*pgxpool.Pool)
-	valid := users.ValidateLogin(dbPool, requestData.Email, requestData.Password)
+	valid := manager.ValidateLogin(dbPool, requestData.Email, requestData.Password)
 	if valid != true {
 		c.AbortWithStatus(401)
 	}
-	user, findErr := users.FindUserByEmail(dbPool, requestData.Email)
+	user, findErr := manager.FindUserByEmail(dbPool, requestData.Email)
 	if findErr != nil {
 		c.AbortWithError(400, findErr)
 	}

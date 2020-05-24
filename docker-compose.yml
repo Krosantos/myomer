@@ -21,9 +21,10 @@ services:
         volumes: 
             - ./main.go:/app/main.go
             - ./game:/app/game/
-            - ./handlers:/app/handlers/
-            - ./managers:/app/managers
-            - ./sockets:/app/sockets
+            - ./handler:/app/handler
+            - ./manager:/app/manager
+            - ./socket:/app/socket
+            - ./maff:/app/maff
             - ./auth:/app/auth
         ports:
             - 3000:3000

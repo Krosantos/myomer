@@ -1,11 +1,11 @@
-package handlers
+package handler
 
 import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/krosantos/myomer/v2/managers/users"
+	"github.com/krosantos/myomer/v2/manager"
 )
 
 type newUserRequestData struct {
@@ -22,7 +22,7 @@ func postUsers(c *gin.Context) {
 		return
 	}
 	dbPool := c.MustGet(cxtDbPool).(*pgxpool.Pool)
-	err := users.CreateUser(dbPool, requestData.Email, requestData.Username, requestData.Password)
+	err := manager.CreateUser(dbPool, requestData.Email, requestData.Username, requestData.Password)
 	if err == nil {
 		c.Status(200)
 	} else {

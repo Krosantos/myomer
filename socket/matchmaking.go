@@ -1,11 +1,11 @@
-package sockets
+package socket
 
 import (
 	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/krosantos/myomer/v2/managers/users"
+	"github.com/krosantos/myomer/v2/manager"
 )
 
 type matchmaking struct {
@@ -85,7 +85,7 @@ func (m matchmaking) match() {
 
 // enqueue -- Attempt to enqueue a user, and a client, into matchmaking. Returns bool of success.
 func (m matchmaking) enqueue(c *client, uid string, aid string) error {
-	u, err := users.FindUserByID(m.pool, uid)
+	u, err := manager.FindUserByID(m.pool, uid)
 	if err != nil {
 		return err
 	}

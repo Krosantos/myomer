@@ -1,4 +1,4 @@
-package sockets
+package socket
 
 import (
 	"net"
@@ -12,7 +12,7 @@ func Instantiate(pool *pgxpool.Pool) {
 	if error != nil {
 		panic("Failed to Instantiate socket listener")
 	}
-	gm := makeGameManager()
+	gm := makeGameManager(pool)
 	mm := makeMatchMaking(gm, pool)
 	f := makeFoyer(mm)
 	for {
