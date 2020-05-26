@@ -2,7 +2,7 @@ package game
 
 /*
 Apologies for the jargon. Instructions are sent out from the game to communicate what has happened.
- Commands are sent to the game, and parsed to cause action.
+Commands are sent to the game, and parsed to cause action.
 */
 
 type commandsEnum struct {
