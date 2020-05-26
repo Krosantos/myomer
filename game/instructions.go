@@ -5,7 +5,7 @@ Apologies for the jargon. Instructions are sent out from the game to communicate
 Commands are sent to the game, and parsed to cause action.
 */
 
-type actionsEnum struct {
+type instructionsEnum struct {
 	MOVE            string
 	ANIMATE         string
 	ADDCONDITION    string
@@ -21,7 +21,7 @@ type actionsEnum struct {
 	GAMEEND         string
 }
 
-var action actionsEnum = actionsEnum{
+var Instruction instructionsEnum = instructionsEnum{
 	MOVE:            "MOVE",
 	ANIMATE:         "ANIMATE",
 	ADDCONDITION:    "ADDCONDITION",
@@ -39,13 +39,22 @@ var action actionsEnum = actionsEnum{
 type moveInstruction struct {
 	Action string `json:"action"`
 	Unit   string `json:"unit"`
-	Tile   coord  `json:"tile"`
+	Tile   Coord  `json:"tile"`
+}
+
+// MoveInstruction -- Inform players a unit has moved
+func MoveInstruction(u string, t Coord) *moveInstruction {
+	return &moveInstruction{
+		Action: Instruction.MOVE,
+		Unit:   u,
+		Tile:   t,
+	}
 }
 
 type animateInstruction struct {
 	Action  string  `json:"action"`
 	Unit    string  `json:"unit"`
-	Targets []coord `json:"targets"`
+	Targets []Coord `json:"targets"`
 }
 
 type addConditionInstruction struct {
@@ -95,7 +104,7 @@ type addUnitInstruction struct {
 
 type removeCorpseInstruction struct {
 	Action string `json:"action"`
-	Tile   coord  `json:"tile"`
+	Tile   Coord  `json:"tile"`
 }
 
 type reanimateInstruction struct {

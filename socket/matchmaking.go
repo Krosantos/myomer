@@ -92,7 +92,6 @@ func (m matchmaking) enqueue(c *client, uid string, aid string) error {
 	}
 	a, err := manager.FindArmyByID(m.pool, aid)
 	if err != nil {
-		println("Dies on army", aid)
 		return err
 	}
 	if a.UserID != uid {

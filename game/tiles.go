@@ -108,13 +108,14 @@ func getDefaultBoard() board {
 	return result
 }
 
-type coord struct {
+// Coord -- X and Y coordinates to refer to a tile.
+type Coord struct {
 	X int `json:"x"`
 	Y int `json:"y"`
 }
 
 // defaultBoardCoords -- The coordinates that make up a ~13x7 game board
-var defaultBoardCoords []coord = []coord{
+var defaultBoardCoords []Coord = []Coord{
 	{-7, -3},
 	{-6, 0},
 	{-6, -1},

@@ -13,7 +13,8 @@ type commandsEnum struct {
 	FORFEIT string
 }
 
-var command commandsEnum = commandsEnum{
+// Command -- an enum of commands
+var Command commandsEnum = commandsEnum{
 	MOVE:    "MOVE",
 	ABILITY: "ABILITY",
 	ATTACK:  "ATTACK",
@@ -24,19 +25,19 @@ var command commandsEnum = commandsEnum{
 type moveCommand struct {
 	Command string `json:"command"`
 	Unit    string `json:"unit"`
-	Tile    coord  `json:"tile"`
+	Tile    Coord  `json:"tile"`
 }
 
 type abilityCommand struct {
 	Command string  `json:"command"`
 	Unit    string  `json:"unit"`
-	Targets []coord `json:"targets"`
+	Targets []Coord `json:"targets"`
 }
 
 type attackCommand struct {
 	Command string `json:"command"`
 	Unit    string `json:"unit"`
-	Target  coord  `json:"target"`
+	Target  Coord  `json:"target"`
 }
 
 type endTurnCommand struct {

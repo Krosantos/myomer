@@ -65,7 +65,7 @@ func buildUnit(t unitTemplate, team int, tile *tile) unit {
 	return result
 }
 
-var positionToTile map[int]map[int]coord = map[int]map[int]coord{
+var positionToTile map[int]map[int]Coord = map[int]map[int]Coord{
 	0: {
 		0:  {-6, 0},
 		1:  {-6, -1},
