@@ -1,5 +1,10 @@
 package game
 
+import (
+	"encoding/json"
+	"errors"
+)
+
 /*
 Apologies for the jargon. Instructions are sent out from the game to communicate what has happened.
 Commands are sent to the game, and parsed to cause action.
@@ -46,4 +51,41 @@ type endTurnCommand struct {
 
 type forfeitCommand struct {
 	Command string `json:"command"`
+}
+
+// FormatCommand -- Given a string in, attempt to marshal a command
+func FormatCommand(s string) (interface{}, error) {
+	raw := make(map[string]interface{})
+	err := json.Unmarshal([]byte(s), &raw)
+	if err != nil {
+		return nil, err
+	}
+	cmd, ok := raw["command"]
+	if ok != true {
+		return nil, errors.New("no command specified")
+	}
+	switch cmd {
+	case Command.MOVE:
+		res := moveCommand{}
+		err = json.Unmarshal([]byte(s), &res)
+		return res, err
+	case Command.ABILITY:
+		res := abilityCommand{}
+		err = json.Unmarshal([]byte(s), &res)
+		return res, err
+	case Command.ATTACK:
+		res := attackCommand{}
+		err = json.Unmarshal([]byte(s), &res)
+		return res, err
+	case Command.ENDTURN:
+		res := endTurnCommand{}
+		err = json.Unmarshal([]byte(s), &res)
+		return res, err
+	case Command.FORFEIT:
+		res := forfeitCommand{}
+		err = json.Unmarshal([]byte(s), &res)
+		return res, err
+	default:
+		return nil, errors.New("unrecognized command")
+	}
 }

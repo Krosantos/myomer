@@ -37,8 +37,6 @@ func (m match) listen(p *player) {
 			m.broadcast(err.Error())
 			break
 		}
-		horse := game.MoveInstruction("ha", game.Coord{3, 3})
-		game.Process(horse)
 		m.broadcast("COPY!: " + string(raw))
 	}
 }

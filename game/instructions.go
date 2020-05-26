@@ -21,6 +21,7 @@ type instructionsEnum struct {
 	GAMEEND         string
 }
 
+// Instruction -- an instruciton emitted by the game, and passed to the players to update them
 var Instruction instructionsEnum = instructionsEnum{
 	MOVE:            "MOVE",
 	ANIMATE:         "ANIMATE",
@@ -40,15 +41,6 @@ type moveInstruction struct {
 	Action string `json:"action"`
 	Unit   string `json:"unit"`
 	Tile   Coord  `json:"tile"`
-}
-
-// MoveInstruction -- Inform players a unit has moved
-func MoveInstruction(u string, t Coord) *moveInstruction {
-	return &moveInstruction{
-		Action: Instruction.MOVE,
-		Unit:   u,
-		Tile:   t,
-	}
 }
 
 type animateInstruction struct {
