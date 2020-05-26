@@ -95,8 +95,8 @@ func getDefaultBoard() board {
 	}
 	for _, coord := range defaultBoardCoords {
 		t := tile{
-			x:       coord.x,
-			y:       coord.y,
+			x:       coord.X,
+			y:       coord.Y,
 			z:       0,
 			unit:    nil,
 			corpse:  nil,
@@ -109,8 +109,8 @@ func getDefaultBoard() board {
 }
 
 type coord struct {
-	x int
-	y int
+	X int `json:"x"`
+	Y int `json:"y"`
 }
 
 // defaultBoardCoords -- The coordinates that make up a ~13x7 game board

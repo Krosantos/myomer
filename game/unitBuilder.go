@@ -32,7 +32,7 @@ type unitTemplate struct {
 // Currently, there are 19 eligible tiles a unit can start on on either side. This function maps those to a tile coordinate, based on team.
 func getUnitTile(pos int, team int, b *board) *tile {
 	coord := positionToTile[team][pos]
-	return b.get(coord.x, coord.y)
+	return b.get(coord.X, coord.Y)
 }
 
 // buildUnit -- Given a unit template, team, and tile, build a unit
