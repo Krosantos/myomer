@@ -5,6 +5,10 @@ Apologies for the jargon. Instructions are sent out from the game to communicate
 Commands are sent to the game, and parsed to cause action.
 */
 
+type instruction interface {
+	toString() string
+}
+
 type instructionsEnum struct {
 	MOVE            string
 	ANIMATE         string

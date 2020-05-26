@@ -38,7 +38,11 @@ func (m match) listen(p *player) {
 			m.broadcast(err.Error() + "-" + p.name)
 			break
 		}
-		m.broadcast(p.name + ": " + string(raw))
+		cmd, err := game.FormatCommand(raw)
+		instructions := m.game.ParseCommand(cmd)
+		for _, ins := range instructions {
+			m.broadcast(ins)
+		}
 	}
 }
 

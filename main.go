@@ -22,5 +22,4 @@ func main() {
 
 	router := handler.PrepareRouter(pool)
 	router.Run(os.Getenv("PORT"))
-
 }
