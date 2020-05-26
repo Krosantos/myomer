@@ -100,7 +100,7 @@ func (f foyer) receive(c *client) {
 }
 
 type foyerMessage struct {
-	Action string `json:"type"`
+	Action string `json:"action"`
 	Auth   string `json:"auth"`
 	UserID string `json:"userId"`
 	ArmyID string `json:"armyId"`

@@ -3,7 +3,7 @@ const net = require('net')
 const conn = net.createConnection(4500, "localhost")
 
 const mmm = {
-    "type": "matchmake",
+    "action": "matchmake",
     "auth": "None, RIP",
     "userId": "0dde213a-a81b-4b02-a665-41ec6c037112",
     "armyId": "fabc3e24-5dca-47f4-86ba-b3e504de4ccb",

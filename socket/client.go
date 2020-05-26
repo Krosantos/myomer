@@ -1,6 +1,8 @@
 package socket
 
-import "net"
+import (
+	"net"
+)
 
 type client struct {
 	conn net.Conn
