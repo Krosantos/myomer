@@ -15,7 +15,7 @@ INSERT INTO users (id, username, email, password, elo, created_at, updated_at)
 VALUES ('0dde213a-a81b-4b02-a665-41ec6c037112', 'Krosantos', 'tymko.tecca@gmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());
 
 INSERT INTO users (id, username, email, password, elo, created_at, updated_at) 
-VALUES (uuid_generate_v4(), 'Ramira', 'rgutierrez@gmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());
+VALUES ('0c79665d-0ff8-4df9-8d9e-fe44b4b36308', 'Ramira', 'rgutierrez@gmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());
 
 INSERT INTO users (id, username, email, password, elo, created_at, updated_at) 
 VALUES (uuid_generate_v4(), 'Castillian', 'lemon.cake@hotmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());

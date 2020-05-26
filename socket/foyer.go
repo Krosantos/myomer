@@ -1,7 +1,6 @@
 package socket
 
 import (
-	"encoding/json"
 	"sync"
 	"time"
 )
@@ -72,13 +71,8 @@ func (f foyer) deregister(c *client, kill bool) {
 // receive -- Parse and act on messages from held clients
 func (f foyer) receive(c *client) {
 	for {
-		raw, err := c.read()
-		if err != nil {
-			f.deregister(c, true)
-			break
-		}
 		m := foyerMessage{}
-		err = json.Unmarshal([]byte(raw), &m)
+		err := c.marshal(&m)
 		if err != nil {
 			f.deregister(c, true)
 			break
@@ -91,10 +85,17 @@ func (f foyer) receive(c *client) {
 			err := f.matchmaking.enqueue(c, m.UserID, m.ArmyID)
 			if err == nil {
 				f.deregister(c, false)
+			} else {
+				println("Enqueue error:", err.Error())
 			}
 			break
 		} else if m.Action == "reconnect" {
-			println("RECONNECT")
+			err := f.matchmaking.gameManager.reconnect(c, m.UserID, m.GameID)
+			if err == nil {
+				f.deregister(c, false)
+			} else {
+				println("Reconnect error:", err.Error())
+			}
 		}
 	}
 }

@@ -7,6 +7,9 @@ const mmm = {
     "auth": "None, RIP",
     "userId": "0dde213a-a81b-4b02-a665-41ec6c037112",
     "armyId": "fabc3e24-5dca-47f4-86ba-b3e504de4ccb",
+    // "userId": "0c79665d-0ff8-4df9-8d9e-fe44b4b36308",
+    // "armyId": "abcd661c-18c4-4c7a-bd9d-e35ac06a48f5",
+    "gameId":"640129d2-4277-47ce-aed1-fc50ede03c9e",
 }
 
 conn.on('connect', () => {

@@ -1,6 +1,7 @@
 package socket
 
 import (
+	"errors"
 	"sync"
 
 	"github.com/google/uuid"
@@ -40,6 +41,24 @@ func (gm gameManager) start() {
 	}
 }
 
+// reconnect -- attempt to replace a match connection with an incoming connection
+func (gm gameManager) reconnect(c *client, uid string, gid string) error {
+	match, ok := gm.activeGames[gid]
+	if ok != true {
+		for g := range gm.activeGames {
+			println(g)
+		}
+		return errors.New("game not found")
+	}
+	player, ok := match.players[uid]
+	if ok != true {
+		return errors.New("user not found in game")
+	}
+	player.client = c
+	player.client.write("You're back in the game. Yeet.")
+	return nil
+}
+
 // buildMatch -- given two successfully matched users, set up a game.
 func (gm gameManager) buildMatch(mc1 *matchCandidate, mc2 *matchCandidate) error {
 	match := &match{
@@ -48,6 +67,7 @@ func (gm gameManager) buildMatch(mc1 *matchCandidate, mc2 *matchCandidate) error
 		game:    game.BuildGame(),
 		players: make(map[string]*player),
 	}
+	gm.activeGames[match.id] = match
 	p1 := &player{
 		id:     mc1.uid,
 		name:   mc1.name,
