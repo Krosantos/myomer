@@ -92,6 +92,7 @@ func (m matchmaking) enqueue(c *client, uid string, aid string) error {
 	}
 	a, err := manager.FindArmyByID(m.pool, aid)
 	if err != nil {
+		println("Dies on army", aid)
 		return err
 	}
 	if a.UserID != uid {
@@ -106,21 +107,18 @@ func (m matchmaking) enqueue(c *client, uid string, aid string) error {
 		client: c,
 	}
 	m.register <- mc
-	mc.client.conn.Write([]byte("Enqueued"))
+	mc.client.write("Enqueued")
 	return nil
 }
 
 // receive -- Listen for incoming client messages
 func (m matchmaking) receive(mc *matchCandidate) {
 	for {
-		bloat := make([]byte, 4096)
-		len, err := mc.client.conn.Read(bloat)
+		s, err := mc.client.read()
 		if err != nil {
 			m.cancel(mc)
 			break
 		}
-		raw := bloat[:len]
-		s := string(raw)
 		if s == "cancel" {
 			m.cancel(mc)
 			break

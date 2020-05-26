@@ -2,13 +2,14 @@ package socket
 
 import (
 	"net"
+	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 // Instantiate -- Start up the cluster of sockets and structures designed to wrangle them.
 func Instantiate(pool *pgxpool.Pool) {
-	listener, error := net.Listen("tcp", ":4500")
+	listener, error := net.Listen("tcp", os.Getenv("SOCKET_PORT"))
 	if error != nil {
 		panic("Failed to Instantiate socket listener")
 	}

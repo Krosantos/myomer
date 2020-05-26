@@ -25,20 +25,18 @@ func (m match) addPlayer(p *player) {
 	m.lock.Lock()
 	m.players[p.id] = p
 	m.lock.Unlock()
-	p.client.conn.Write([]byte("Successfully added to game " + m.id))
+	p.client.write("Successfully added to game " + m.id)
 	go m.listen(p)
 }
 
 // listen -- Listen to incoming messages
 func (m match) listen(p *player) {
 	for {
-		bloat := make([]byte, 4096)
-		len, err := p.client.conn.Read(bloat)
+		raw, err := p.client.read()
 		if err != nil {
 			m.broadcast(err.Error())
 			break
 		}
-		raw := bloat[:len]
 		m.broadcast("COPY!: " + string(raw))
 	}
 }
@@ -47,7 +45,7 @@ func (m match) listen(p *player) {
 func (m match) broadcast(s string) {
 	m.lock.Lock()
 	for _, p := range m.players {
-		p.client.conn.Write([]byte(s))
+		p.client.write(s)
 	}
 	m.lock.Unlock()
 }

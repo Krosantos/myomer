@@ -72,15 +72,13 @@ func (f foyer) deregister(c *client, kill bool) {
 // receive -- Parse and act on messages from held clients
 func (f foyer) receive(c *client) {
 	for {
-		bloat := make([]byte, 4096)
-		len, err := c.conn.Read(bloat)
+		raw, err := c.read()
 		if err != nil {
 			f.deregister(c, true)
 			break
 		}
-		raw := bloat[:len]
 		m := foyerMessage{}
-		err = json.Unmarshal(raw, &m)
+		err = json.Unmarshal([]byte(raw), &m)
 		if err != nil {
 			f.deregister(c, true)
 			break
