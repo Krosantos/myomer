@@ -84,6 +84,7 @@ func (f foyer) receive(c *client) {
 		if m.Action == "matchmake" {
 			err := f.matchmaking.enqueue(c, m.UserID, m.ArmyID)
 			if err == nil {
+				println("Successfully enqueued" + m.UserID)
 				f.deregister(c, false)
 			} else {
 				println("Enqueue error:", err.Error())
@@ -96,6 +97,7 @@ func (f foyer) receive(c *client) {
 			} else {
 				println("Reconnect error:", err.Error())
 			}
+			break
 		}
 	}
 }

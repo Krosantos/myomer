@@ -54,8 +54,11 @@ func (gm gameManager) reconnect(c *client, uid string, gid string) error {
 	if ok != true {
 		return errors.New("user not found in game")
 	}
+	match.lock.Lock()
 	player.client = c
-	player.client.write("You're back in the game. Yeet.")
+	go match.listen(player)
+	match.lock.Unlock()
+	match.broadcast("Player reconnected")
 	return nil
 }
 
@@ -66,6 +69,7 @@ func (gm gameManager) buildMatch(mc1 *matchCandidate, mc2 *matchCandidate) error
 		lock:    &sync.Mutex{},
 		game:    game.BuildGame(),
 		players: make(map[string]*player),
+		active:  true,
 	}
 	gm.activeGames[match.id] = match
 	p1 := &player{

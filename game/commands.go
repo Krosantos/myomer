@@ -50,7 +50,8 @@ type endTurnCommand struct {
 }
 
 type forfeitCommand struct {
-	Command string `json:"command"`
+	Command   string `json:"command"`
+	Automatic bool   `json:"automatic"`
 }
 
 // FormatCommand -- Given a string in, attempt to marshal a command

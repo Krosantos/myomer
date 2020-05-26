@@ -11,6 +11,7 @@ type match struct {
 	lock    *sync.Mutex
 	game    *game.Game
 	players map[string]*player
+	active  bool
 }
 
 type player struct {
@@ -34,10 +35,10 @@ func (m match) listen(p *player) {
 	for {
 		raw, err := p.client.read()
 		if err != nil {
-			m.broadcast(err.Error())
+			m.broadcast(err.Error() + "-" + p.name)
 			break
 		}
-		m.broadcast("COPY!: " + string(raw))
+		m.broadcast(p.name + ": " + string(raw))
 	}
 }
 

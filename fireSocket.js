@@ -9,7 +9,7 @@ const mmm = {
     "armyId": "fabc3e24-5dca-47f4-86ba-b3e504de4ccb",
     // "userId": "0c79665d-0ff8-4df9-8d9e-fe44b4b36308",
     // "armyId": "abcd661c-18c4-4c7a-bd9d-e35ac06a48f5",
-    "gameId":"640129d2-4277-47ce-aed1-fc50ede03c9e",
+    "gameId": "a119fbab-305c-433e-b729-232025b3ea24"
 }
 
 conn.on('connect', () => {
@@ -30,5 +30,9 @@ conn.on("end", () => {
 })
 
 conn.on("data", (data) => {
-    console.log(data.toString("utf-8"))
+    const message = data.toString("utf-8")
+    console.log(message)
+    if (message.includes("reconnected") && mmm.action === 'reconnect') {
+        conn.write("OMAHA MAMA YAMA")
+    }
 })
