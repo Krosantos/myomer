@@ -7,15 +7,15 @@ type unit struct {
 	templateID      string
 	team            int
 	cost            int
-	color           color
+	color           string
 	strength        int
 	health          int
 	damage          int
 	speed           int
 	moxie           int
 	attackRange     int
-	attackType      targetType
-	moveType        moveType
+	attackType      string
+	moveType        string
 	tile            *tile
 	isDead          bool
 	onAttack        []string

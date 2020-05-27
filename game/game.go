@@ -26,9 +26,9 @@ func (g Game) PopulateArmy(s string, team int) {
 	if err != nil {
 		panic(err)
 	}
-	for pos, template := range a.Units {
+	for pos, templateID := range a.Units {
 		tile := getUnitTile(pos, team, g.board)
-		unit := buildUnit(template, team, tile)
+		unit := buildUnit(templateID, team, tile)
 		g.units[unit.id] = unit
 	}
 }

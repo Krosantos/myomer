@@ -1,6 +1,9 @@
 package game
 
-import "github.com/krosantos/myomer/v2/maff"
+import (
+	"github.com/krosantos/myomer/v2/game/unit"
+	"github.com/krosantos/myomer/v2/maff"
+)
 
 // Manhattan distance heuristic
 func (t *tile) heuristic(d *tile) int {
@@ -22,9 +25,9 @@ func getPassable(u *unit, from *tile, to *tile) bool {
 	isTall := maff.Abs(from.z-to.z) > 1
 	isImpassable := to.terrain == water || to.terrain == void
 
-	canPassEnemy := u.moveType == flying || u.moveType == teleport || u.moveType == infiltrate
-	canPassTall := u.moveType == flying || u.moveType == teleport || u.moveType == climb
-	canPassImpass := u.moveType == flying || u.moveType == teleport
+	canPassEnemy := u.moveType == unit.MoveType.Flying || u.moveType == unit.MoveType.Teleport || u.moveType == unit.MoveType.Infiltrate
+	canPassTall := u.moveType == unit.MoveType.Flying || u.moveType == unit.MoveType.Teleport || u.moveType == unit.MoveType.Climb
+	canPassImpass := u.moveType == unit.MoveType.Flying || u.moveType == unit.MoveType.Teleport
 
 	if hasEnemy && !canPassEnemy {
 		return false
@@ -43,7 +46,7 @@ func getPassable(u *unit, from *tile, to *tile) bool {
 func getCanEndOn(u *unit, t *tile) bool {
 	isEmpty := t.unit == nil
 	if t.terrain == void || t.terrain == water {
-		return u.moveType == flying
+		return u.moveType == unit.MoveType.Flying
 	}
 	return isEmpty
 }

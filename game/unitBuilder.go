@@ -2,32 +2,11 @@ package game
 
 import (
 	"github.com/google/uuid"
+	"github.com/krosantos/myomer/v2/game/unit"
 )
 
 type army struct {
-	Units map[int]unitTemplate `json:"units"`
-}
-
-type unitTemplate struct {
-	TemplateID      string     `json:"templateId"`
-	Name            string     `json:"name"`
-	Cost            int        `json:"cost"`
-	Color           color      `json:"color"`
-	Strength        int        `json:"strength"`
-	Health          int        `json:"health"`
-	Speed           int        `json:"speed"`
-	Moxie           int        `json:"moxie"`
-	AttackRange     int        `json:"attackRange"`
-	AttackType      targetType `json:"attackType"`
-	MoveType        moveType   `json:"moveType"`
-	OnAttack        []string   `json:"onAttack"`
-	OnDie           []string   `json:"onDie"`
-	OnKill          []string   `json:"onKill"`
-	OnMove          []string   `json:"onMove"`
-	OnStrike        []string   `json:"onStrike"`
-	OnStruck        []string   `json:"onStruck"`
-	OnTurnEnd       []string   `json:"onTurnEnd"`
-	ActiveAbilities []string   `json:"activeAbilities"`
+	Units map[int]string `json:"units"`
 }
 
 // Currently, there are 19 eligible tiles a unit can start on on either side. This function maps those to a tile coordinate, based on team.
@@ -37,7 +16,11 @@ func getUnitTile(pos int, team int, b *board) *tile {
 }
 
 // buildUnit -- Given a unit template, team, and tile, build a unit
-func buildUnit(t unitTemplate, team int, tile *tile) unit {
+func buildUnit(tid string, team int, tile *tile) unit {
+	t, ok := unit.Library[tid]
+	if !ok {
+		return nil
+	}
 	result := unit{
 		id:              uuid.New().String(),
 		templateID:      t.TemplateID,
