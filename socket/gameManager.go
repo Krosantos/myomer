@@ -3,6 +3,7 @@ package socket
 import (
 	"errors"
 	"sync"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -12,6 +13,7 @@ import (
 
 type gameManager struct {
 	pool        *pgxpool.Pool
+	lock        *sync.Mutex
 	activeGames map[string]*match
 	register    chan *match
 	remove      chan *match
@@ -21,11 +23,13 @@ type gameManager struct {
 func makeGameManager(pool *pgxpool.Pool) gameManager {
 	gm := gameManager{
 		pool:        pool,
+		lock:        &sync.Mutex{},
 		activeGames: make(map[string]*match),
 		register:    make(chan *match),
 		remove:      make(chan *match),
 	}
 	go gm.start()
+	go gm.prune()
 	return gm
 }
 
@@ -38,6 +42,25 @@ func (gm gameManager) start() {
 		case match := <-gm.remove:
 			delete(gm.activeGames, match.id)
 		}
+	}
+}
+
+// prune -- periodically check for and remove inactive games
+func (gm gameManager) prune() {
+	for range time.Tick(time.Second * time.Duration(30)) {
+		gm.lock.Lock()
+		for gid, g := range gm.activeGames {
+			hasPlayers := false
+			for _, p := range g.players {
+				if p.active {
+					hasPlayers = true
+				}
+			}
+			if !g.active || !hasPlayers {
+				delete(gm.activeGames, gid)
+			}
+		}
+		gm.lock.Unlock()
 	}
 }
 
@@ -56,6 +79,7 @@ func (gm gameManager) reconnect(c *client, uid string, gid string) error {
 	}
 	match.lock.Lock()
 	player.client = c
+	player.active = true
 	go match.listenToPlayer(player)
 	match.lock.Unlock()
 	match.broadcast("Player reconnected")
@@ -72,18 +96,22 @@ func (gm gameManager) buildMatch(mc1 *matchCandidate, mc2 *matchCandidate) error
 		active:  true,
 	}
 	go match.listenToGame()
+	gm.lock.Lock()
 	gm.activeGames[match.id] = match
+	gm.lock.Unlock()
 	p1 := &player{
 		id:     mc1.uid,
 		name:   mc1.name,
 		team:   0,
 		client: mc1.client,
+		active: true,
 	}
 	p2 := &player{
 		id:     mc2.uid,
 		name:   mc2.name,
 		team:   1,
 		client: mc2.client,
+		active: true,
 	}
 	p1a, err := manager.FindArmyByID(gm.pool, mc1.aid)
 	if err != nil {

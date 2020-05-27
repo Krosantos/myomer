@@ -19,6 +19,7 @@ type player struct {
 	name   string
 	team   int
 	client *client
+	active bool
 }
 
 // addPlayer -- Add a player to the slice, start listening to their messages
@@ -56,6 +57,7 @@ func (m match) listenToPlayer(p *player) {
 		raw, err := p.client.read()
 		if err != nil {
 			println("Lost a player", p.name, err.Error())
+			p.active = false
 			m.broadcast(err.Error() + "-" + p.name)
 			break
 		}
