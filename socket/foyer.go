@@ -6,27 +6,25 @@ import (
 )
 
 type foyer struct {
-	matchmaking *matchmaking
-	lock        *sync.Mutex
-	clients     map[*client]time.Time
-	register    chan *client
-	remove      chan *client
+	lock     *sync.Mutex
+	clients  map[*client]time.Time
+	register chan *client
+	remove   chan *client
 }
 
 // makeFoyer -- Instantiate a new foyer instance, and set it in motion
-func makeFoyer(mm *matchmaking) *foyer {
+func makeFoyer() foyer {
 	foyer := foyer{
-		matchmaking: mm,
-		lock:        &sync.Mutex{},
-		clients:     make(map[*client]time.Time),
-		register:    make(chan *client),
-		remove:      make(chan *client),
+		lock:     &sync.Mutex{},
+		clients:  make(map[*client]time.Time),
+		register: make(chan *client),
+		remove:   make(chan *client),
 	}
 
 	go foyer.listen()
 	go foyer.prune(time.Second * time.Duration(5))
 
-	return &foyer
+	return foyer
 }
 
 // listen -- Listen to register/remove clients
@@ -83,7 +81,7 @@ func (f foyer) receive(c *client) {
 		// 	break
 		// }
 		if m.Action == "matchmake" {
-			err := f.matchmaking.enqueue(c, m.UserID, m.ArmyID)
+			err := mm.enqueue(c, m.UserID, m.ArmyID)
 			if err == nil {
 				println("Successfully enqueued" + m.UserID)
 				f.deregister(c, false)
@@ -92,7 +90,7 @@ func (f foyer) receive(c *client) {
 			}
 			break
 		} else if m.Action == "reconnect" {
-			err := f.matchmaking.gameManager.reconnect(c, m.UserID, m.GameID)
+			err := gm.reconnect(c, m.UserID, m.GameID)
 			if err == nil {
 				f.deregister(c, false)
 			} else {

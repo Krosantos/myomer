@@ -1,35 +1,25 @@
 package socket
 
 import (
-	"net"
-	"os"
-
 	"github.com/jackc/pgx/v4/pgxpool"
 	"golang.org/x/net/websocket"
 )
 
-// Instantiate -- Start up the cluster of sockets and structures designed to wrangle them.
-func Instantiate(pool *pgxpool.Pool) {
-	listener, error := net.Listen("tcp", os.Getenv("SOCKET_PORT"))
-	if error != nil {
-		panic("Failed to Instantiate socket listener")
-	}
-	gm := makeGameManager(pool)
-	mm := makeMatchMaking(gm, pool)
-	f := makeFoyer(mm)
-	for {
-		conn, _ := listener.Accept()
-		client := &client{conn: conn, data: make(chan []byte)}
-		f.register <- client
-	}
+var gm gameManager
+var mm matchmaking
+var f foyer
+
+// Initialize -- Set up the data structures which manage sockets over their lifetimes
+func Initialize(pool *pgxpool.Pool) {
+	gm = makeGameManager(pool)
+	mm = makeMatchMaking(pool)
+	f = makeFoyer()
 }
 
 // Handler -- The main handler for connections
 func Handler(c *websocket.Conn) {
+	client := &client{conn: c}
+	f.register <- client
 	for {
-		var m string
-		websocket.Message.Receive(c, &m)
-		println(m)
-		websocket.Message.Send(c, "Penis")
 	}
 }

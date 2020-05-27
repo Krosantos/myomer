@@ -18,7 +18,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer pool.Close()
-	go socket.Instantiate(pool)
+	go socket.Initialize(pool)
 
 	router := handler.PrepareRouter(pool)
 	router.Run(os.Getenv("PORT"))

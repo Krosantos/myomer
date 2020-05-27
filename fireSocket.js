@@ -1,7 +1,7 @@
 const net = require('net')
 
-const conn = net.createConnection(3000, "localhost")
-
+// const conn = net.createConnection(3000, "localhost")
+conn = {}
 conn.fuckyou = function(string){
     this.write(string)
     this.write('\n')
@@ -19,51 +19,52 @@ const mmm = {
     "gameId": "d2696731-0c23-4dec-ad5b-0e54eee70756"
 }
 
+console.log(JSON.stringify(mmm))
 const forfeit = {
     action:"FORFEIT",
     automatic: true
 }
 
-conn.on('connect', () => {
-    console.log('I connected!')
-    conn.fuckyou(JSON.stringify(mmm))
-    // setTimeout(() => {
-    //     console.log("Asking politely to cancel matchmaking")
-    //     conn.fuckyou("cancel")
-    // }, 1000);
-})
+// conn.on('connect', () => {
+//     console.log('I connected!')
+//     conn.fuckyou(JSON.stringify(mmm))
+//     // setTimeout(() => {
+//     //     console.log("Asking politely to cancel matchmaking")
+//     //     conn.fuckyou("cancel")
+//     // }, 1000);
+// })
 
-conn.on("close", () => {
-    console.log('Socket Killed')
-})
+// conn.on("close", () => {
+//     console.log('Socket Killed')
+// })
 
-conn.on("end", () => {
-    console.log("???")
-})
+// conn.on("end", () => {
+//     console.log("???")
+// })
 
-conn.on("data", (data) => {
-    const message = data.toString("utf-8")
-    console.log(message)
-
-
-    // if (message.includes("reconnected") && mmm.action === 'reconnect') {
-    //     setTimeout(() => {
-    //         console.log('Asking to lose')
-    //         conn.fuckyou(JSON.stringify(forfeit))
-    //     }, 5000);
-    // }
+// conn.on("data", (data) => {
+//     const message = data.toString("utf-8")
+//     console.log(message)
 
 
-    if(message.includes("Successfully added to game")){
-        setTimeout(() => {
-            console.log('Asking to lose')
-            conn.fuckyou(JSON.stringify(forfeit))
-        }, 5000);
-    }
+//     // if (message.includes("reconnected") && mmm.action === 'reconnect') {
+//     //     setTimeout(() => {
+//     //         console.log('Asking to lose')
+//     //         conn.fuckyou(JSON.stringify(forfeit))
+//     //     }, 5000);
+//     // }
 
 
-    // setInterval(() => {
-    //     conn.fuckyou("Ping, motherfucker")
-    //     console.log("Pinging, what the fuck")
-    // }, 1500);
-})
+//     if(message.includes("Successfully added to game")){
+//         setTimeout(() => {
+//             console.log('Asking to lose')
+//             conn.fuckyou(JSON.stringify(forfeit))
+//         }, 5000);
+//     }
+
+
+//     // setInterval(() => {
+//     //     conn.fuckyou("Ping, motherfucker")
+//     //     console.log("Pinging, what the fuck")
+//     // }, 1500);
+// })

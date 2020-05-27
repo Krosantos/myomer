@@ -10,12 +10,11 @@ import (
 )
 
 type matchmaking struct {
-	gameManager *gameManager
-	pool        *pgxpool.Pool
-	lock        *sync.Mutex
-	candidates  map[*matchCandidate]bool
-	register    chan *matchCandidate
-	remove      chan *matchCandidate
+	pool       *pgxpool.Pool
+	lock       *sync.Mutex
+	candidates map[*matchCandidate]bool
+	register   chan *matchCandidate
+	remove     chan *matchCandidate
 }
 
 type matchCandidate struct {
@@ -28,18 +27,17 @@ type matchCandidate struct {
 }
 
 // makeMatchMaking -- Return a pointer to a new matchmaking instance, and set it in motion
-func makeMatchMaking(gm *gameManager, pool *pgxpool.Pool) *matchmaking {
+func makeMatchMaking(pool *pgxpool.Pool) matchmaking {
 	mm := matchmaking{
-		gameManager: gm,
-		pool:        pool,
-		lock:        &sync.Mutex{},
-		candidates:  make(map[*matchCandidate]bool),
-		register:    make(chan *matchCandidate),
-		remove:      make(chan *matchCandidate),
+		pool:       pool,
+		lock:       &sync.Mutex{},
+		candidates: make(map[*matchCandidate]bool),
+		register:   make(chan *matchCandidate),
+		remove:     make(chan *matchCandidate),
 	}
 	go mm.listen()
 	go mm.match()
-	return &mm
+	return mm
 }
 
 // listen -- Continuously listen for candidates to enqueue/dequeue
@@ -73,7 +71,7 @@ func (m matchmaking) match() {
 			}
 			if cc != mc {
 				// Match found, baby! ezpz
-				err := m.gameManager.buildMatch(cc, mc)
+				err := gm.buildMatch(cc, mc)
 				if err == nil {
 					m.remove <- cc
 					m.remove <- mc
@@ -115,11 +113,15 @@ func (m matchmaking) receive(mc *matchCandidate) {
 	for {
 		s, err := mc.client.read()
 		if err != nil {
+			println("Error detected while in matchmaking")
 			m.cancel(mc)
 			break
 		}
 		if s == "cancel" {
 			m.cancel(mc)
+			break
+		}
+		if s == "ready" {
 			break
 		}
 	}

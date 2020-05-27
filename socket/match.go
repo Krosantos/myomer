@@ -52,8 +52,8 @@ func (m match) listenToGame() {
 // listenToPlayer -- Listen to incoming messages
 func (m match) listenToPlayer(p *player) {
 	println("I am listening to a player", p.name)
-	p.client.write("Joke's on you, idiot, I don't even fucking work")
 	for {
+		p.client.write("get fucked")
 		raw, err := p.client.read()
 		if err != nil {
 			println("Lost a player", p.name, err.Error())

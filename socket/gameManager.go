@@ -18,7 +18,7 @@ type gameManager struct {
 }
 
 // makeGameManager -- Return a pointer to a new gameManager instance, and set it in motion
-func makeGameManager(pool *pgxpool.Pool) *gameManager {
+func makeGameManager(pool *pgxpool.Pool) gameManager {
 	gm := gameManager{
 		pool:        pool,
 		activeGames: make(map[string]*match),
@@ -26,7 +26,7 @@ func makeGameManager(pool *pgxpool.Pool) *gameManager {
 		remove:      make(chan *match),
 	}
 	go gm.start()
-	return &gm
+	return gm
 }
 
 // start -- prepare to add and remove games from the registry
