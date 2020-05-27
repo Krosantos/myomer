@@ -1,4 +1,4 @@
-package unit
+package unittemplate
 
 // Template -- A template used to instantiate a unit
 type Template struct {

@@ -2,7 +2,7 @@ package game
 
 import (
 	"github.com/google/uuid"
-	"github.com/krosantos/myomer/v2/game/unit"
+	"github.com/krosantos/myomer/v2/game/unittemplate"
 )
 
 type army struct {
@@ -17,10 +17,7 @@ func getUnitTile(pos int, team int, b *board) *tile {
 
 // buildUnit -- Given a unit template, team, and tile, build a unit
 func buildUnit(tid string, team int, tile *tile) unit {
-	t, ok := unit.Library[tid]
-	if !ok {
-		return nil
-	}
+	t := unittemplate.Library[tid]
 	result := unit{
 		id:              uuid.New().String(),
 		templateID:      t.TemplateID,

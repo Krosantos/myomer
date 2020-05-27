@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/krosantos/myomer/v2/game/unit"
+	"github.com/krosantos/myomer/v2/game/unittemplate"
 	"github.com/krosantos/myomer/v2/maff"
 )
 
@@ -25,9 +25,9 @@ func getPassable(u *unit, from *tile, to *tile) bool {
 	isTall := maff.Abs(from.z-to.z) > 1
 	isImpassable := to.terrain == water || to.terrain == void
 
-	canPassEnemy := u.moveType == unit.MoveType.Flying || u.moveType == unit.MoveType.Teleport || u.moveType == unit.MoveType.Infiltrate
-	canPassTall := u.moveType == unit.MoveType.Flying || u.moveType == unit.MoveType.Teleport || u.moveType == unit.MoveType.Climb
-	canPassImpass := u.moveType == unit.MoveType.Flying || u.moveType == unit.MoveType.Teleport
+	canPassEnemy := u.moveType == unittemplate.MoveType.Flying || u.moveType == unittemplate.MoveType.Teleport || u.moveType == unittemplate.MoveType.Infiltrate
+	canPassTall := u.moveType == unittemplate.MoveType.Flying || u.moveType == unittemplate.MoveType.Teleport || u.moveType == unittemplate.MoveType.Climb
+	canPassImpass := u.moveType == unittemplate.MoveType.Flying || u.moveType == unittemplate.MoveType.Teleport
 
 	if hasEnemy && !canPassEnemy {
 		return false
@@ -46,7 +46,7 @@ func getPassable(u *unit, from *tile, to *tile) bool {
 func getCanEndOn(u *unit, t *tile) bool {
 	isEmpty := t.unit == nil
 	if t.terrain == void || t.terrain == water {
-		return u.moveType == unit.MoveType.Flying
+		return u.moveType == unittemplate.MoveType.Flying
 	}
 	return isEmpty
 }
