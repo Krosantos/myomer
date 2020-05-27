@@ -1,5 +1,11 @@
 package game
 
+import (
+	"encoding/json"
+
+	"github.com/krosantos/myomer/v2/game/unittemplate"
+)
+
 /*
 Apologies for the jargon. Instructions are sent out from the game to communicate what has happened.
 Commands are sent to the game, and parsed to cause action.
@@ -7,7 +13,8 @@ Commands are sent to the game, and parsed to cause action.
 
 type instructionsEnum struct {
 	MOVE            string
-	ANIMATE         string
+	ATTACK          string
+	ABILITY         string
 	ADDCONDITION    string
 	REMOVECONDITION string
 	DAMAGE          string
@@ -21,10 +28,15 @@ type instructionsEnum struct {
 	GAMEEND         string
 }
 
-// Instruction -- an instruciton emitted by the game, and passed to the players to update them
-var Instruction instructionsEnum = instructionsEnum{
+// Instruction -- A command emitted by the game, to be sent to players
+type Instruction interface {
+	ToString() string
+}
+
+var action instructionsEnum = instructionsEnum{
 	MOVE:            "MOVE",
-	ANIMATE:         "ANIMATE",
+	ATTACK:          "ATTACK",
+	ABILITY:         "ABILITY",
 	ADDCONDITION:    "ADDCONDITION",
 	REMOVECONDITION: "REMOVECONDITION",
 	DAMAGE:          "DAMAGE",
@@ -43,10 +55,32 @@ type moveInstruction struct {
 	Tile   Coord  `json:"tile"`
 }
 
-type animateInstruction struct {
-	Action  string  `json:"action"`
-	Unit    string  `json:"unit"`
-	Targets []Coord `json:"targets"`
+func (i moveInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
+}
+
+type abilityInstruction struct {
+	Action    string  `json:"action"`
+	AbilityID string  `json:"abilityId"`
+	Unit      string  `json:"unit"`
+	Targets   []Coord `json:"targets"`
+}
+
+func (i abilityInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
+}
+
+type attackInstruction struct {
+	Action string `json:"action"`
+	Unit   string `json:"unit"`
+	Target Coord  `json:"target"`
+}
+
+func (i attackInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
 }
 
 type addConditionInstruction struct {
@@ -56,10 +90,20 @@ type addConditionInstruction struct {
 	Duration int    `json:"duration"`
 }
 
+func (i addConditionInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
+}
+
 type removeConditionInstruction struct {
 	Action   string `json:"action"`
 	Unit     string `json:"unit"`
 	StatusID string `json:"statusId"`
+}
+
+func (i removeConditionInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
 }
 
 type damageInstruction struct {
@@ -68,10 +112,20 @@ type damageInstruction struct {
 	Amount int    `json:"amount"`
 }
 
+func (i damageInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
+}
+
 type healInstruction struct {
 	Action string `json:"action"`
 	Unit   string `json:"unit"`
 	Amount int    `json:"amount"`
+}
+
+func (i healInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
 }
 
 type dieInstruction struct {
@@ -79,9 +133,19 @@ type dieInstruction struct {
 	Unit   string `json:"unit"`
 }
 
+func (i dieInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
+}
+
 type endTurnInstruction struct {
 	Action   string `json:"action"`
 	NextUnit string `json:"nextUnit"`
+}
+
+func (i endTurnInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
 }
 
 type endGameInstruction struct {
@@ -89,9 +153,19 @@ type endGameInstruction struct {
 	Winner int    `json:"winner"`
 }
 
-// TODO: -- flesh this out, along with general "them's the units"
+func (i endGameInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
+}
+
 type addUnitInstruction struct {
-	Action string `json:"action"`
+	Action   string                `json:"action"`
+	Template unittemplate.Template `json:"template"`
+}
+
+func (i addUnitInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
 }
 
 type removeCorpseInstruction struct {
@@ -99,7 +173,17 @@ type removeCorpseInstruction struct {
 	Tile   Coord  `json:"tile"`
 }
 
+func (i removeCorpseInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
+}
+
 type reanimateInstruction struct {
 	Action string `json:"action"`
 	Unit   string `json:"unit"`
+}
+
+func (i reanimateInstruction) ToString() string {
+	raw, _ := json.Marshal(i)
+	return string(raw)
 }

@@ -16,7 +16,7 @@ func getUnitTile(pos int, team int, b *board) *tile {
 }
 
 // buildUnit -- Given a unit template, team, and tile, build a unit
-func buildUnit(tid string, team int, tile *tile) unit {
+func (g Game) buildUnit(tid string, team int, tile *tile) unit {
 	t := unittemplate.Library[tid]
 	result := unit{
 		id:              uuid.New().String(),
@@ -41,6 +41,7 @@ func buildUnit(tid string, team int, tile *tile) unit {
 		onTurnEnd:       t.OnTurnEnd,
 		activeAbilities: t.ActiveAbilities,
 		conditions:      make(map[string]Condition),
+		game:            &g,
 	}
 	tile.unit = &result
 

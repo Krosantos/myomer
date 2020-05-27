@@ -4,9 +4,11 @@ import "encoding/json"
 
 // Game -- An individual game in memory, with a board, units, and players
 type Game struct {
-	board      *board
-	units      map[string]unit
-	activeUnit *unit
+	board      *board           // The game board
+	units      map[string]unit  // All the units
+	activeUnit *unit            // The unit whose turn it is
+	Out        chan Instruction // The game broadcasts instructions here
+	End        chan bool        // The game makes a single call here when it's over
 }
 
 // BuildGame -- Create a new game state with the provided armies
@@ -16,6 +18,8 @@ func BuildGame() *Game {
 		board:      &b,
 		units:      make(map[string]unit),
 		activeUnit: nil,
+		Out:        make(chan Instruction),
+		End:        make(chan bool),
 	}
 }
 
@@ -28,7 +32,7 @@ func (g Game) PopulateArmy(s string, team int) {
 	}
 	for pos, templateID := range a.Units {
 		tile := getUnitTile(pos, team, g.board)
-		unit := buildUnit(templateID, team, tile)
+		unit := g.buildUnit(templateID, team, tile)
 		g.units[unit.id] = unit
 	}
 }

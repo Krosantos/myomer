@@ -27,11 +27,27 @@ func (m match) addPlayer(p *player) {
 	m.players[p.id] = p
 	m.lock.Unlock()
 	p.client.write("Successfully added to game " + m.id)
-	go m.listen(p)
+	go m.listenToPlayer(p)
 }
 
-// listen -- Listen to incoming messages
-func (m match) listen(p *player) {
+// listenToGame -- Listen to instructions from the game, broadcast them out
+func (m match) listenToGame() {
+	for {
+		select {
+		case i := <-m.game.Out:
+			m.broadcast(i.ToString())
+		case <-m.game.End:
+			for _, p := range m.players {
+				p.client.conn.Close()
+			}
+			m.active = false
+			break
+		}
+	}
+}
+
+// listenToPlayer -- Listen to incoming messages
+func (m match) listenToPlayer(p *player) {
 	for {
 		raw, err := p.client.read()
 		if err != nil {
@@ -39,10 +55,7 @@ func (m match) listen(p *player) {
 			break
 		}
 		cmd, err := game.FormatCommand(raw)
-		instructions := m.game.ParseCommand(cmd)
-		for _, ins := range instructions {
-			m.broadcast(ins)
-		}
+		m.game.ParseCommand(cmd)
 	}
 }
 

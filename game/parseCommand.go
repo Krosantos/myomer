@@ -1,9 +1,7 @@
 package game
 
 // ParseCommand -- Parse incoming commands, apply them to the game state, return a list of instructions to send out to players
-func (g Game) ParseCommand(cmd interface{}) []string {
-	res := []string{}
-
+func (g Game) ParseCommand(cmd interface{}) {
 	switch c := cmd.(type) {
 	case moveCommand:
 		u, ok := g.units[c.Unit]
@@ -12,7 +10,7 @@ func (g Game) ParseCommand(cmd interface{}) []string {
 		}
 		t := g.board.get(c.Tile.X, c.Tile.Y)
 		if u.moveIsValid(t) {
-
+			u.move(t)
 		}
 		break
 	case abilityCommand:
@@ -20,6 +18,4 @@ func (g Game) ParseCommand(cmd interface{}) []string {
 	case endTurnCommand:
 	case forfeitCommand:
 	}
-
-	return res
 }

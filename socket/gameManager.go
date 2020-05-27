@@ -56,7 +56,7 @@ func (gm gameManager) reconnect(c *client, uid string, gid string) error {
 	}
 	match.lock.Lock()
 	player.client = c
-	go match.listen(player)
+	go match.listenToPlayer(player)
 	match.lock.Unlock()
 	match.broadcast("Player reconnected")
 	return nil
@@ -71,6 +71,7 @@ func (gm gameManager) buildMatch(mc1 *matchCandidate, mc2 *matchCandidate) error
 		players: make(map[string]*player),
 		active:  true,
 	}
+	go match.listenToGame()
 	gm.activeGames[match.id] = match
 	p1 := &player{
 		id:     mc1.uid,
