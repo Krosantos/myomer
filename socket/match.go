@@ -38,7 +38,7 @@ func (m match) listenToGame() {
 		case ins := <-m.game.Out:
 			m.broadcast(ins.ToString())
 		case cmd := <-m.game.In:
-			m.game.ParseCommand(cmd)
+			go m.game.ParseCommand(cmd)
 			// case <-m.game.End:
 			// 	for _, p := range m.players {
 			// 		p.client.conn.Close()
@@ -53,19 +53,17 @@ func (m match) listenToGame() {
 func (m match) listenToPlayer(p *player) {
 	println("I am listening to a player", p.name)
 	for {
-		p.client.write("get fucked")
 		raw, err := p.client.read()
 		if err != nil {
 			println("Lost a player", p.name, err.Error())
 			m.broadcast(err.Error() + "-" + p.name)
 			break
 		}
-		println("I have received something from the player: ", raw)
-		// cmd, err := game.FormatCommand(raw)
-		// if err != nil {
-		// 	println("Error receiving message", err.Error())
-		// }
-		// m.game.In <- cmd
+		cmd, err := game.FormatCommand(raw)
+		if err != nil {
+			println("Error receiving message", err.Error())
+		}
+		m.game.In <- cmd
 	}
 }
 

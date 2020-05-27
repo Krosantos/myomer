@@ -32,6 +32,7 @@ func (g Game) ParseCommand(cmd Command) {
 			Winner: 0,
 		}
 		g.Out <- egi
+		break
 	default:
 	}
 }
