@@ -70,7 +70,7 @@ func FormatCommand(s string) (Command, error) {
 	if err != nil {
 		return nil, err
 	}
-	cmd, ok := raw["command"]
+	cmd, ok := raw["action"]
 	if ok != true {
 		return nil, errors.New("no command specified")
 	}
@@ -92,6 +92,7 @@ func FormatCommand(s string) (Command, error) {
 		err = json.Unmarshal([]byte(s), &res)
 		return res, err
 	case cmdAction.FORFEIT:
+		println("I am definitely telling you it is forfeit")
 		res := forfeitCommand{}
 		err = json.Unmarshal([]byte(s), &res)
 		return res, err

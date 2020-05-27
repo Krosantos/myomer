@@ -74,6 +74,7 @@ func (f foyer) receive(c *client) {
 		m := foyerMessage{}
 		err := c.marshal(&m)
 		if err != nil {
+			println("Error marshaling foyer message:", err.Error())
 			f.deregister(c, true)
 			break
 		}

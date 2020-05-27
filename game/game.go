@@ -23,7 +23,6 @@ func BuildGame() *Game {
 		Out:        make(chan Instruction),
 		End:        make(chan bool),
 	}
-	go g.listen()
 	return g
 }
 

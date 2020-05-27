@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"golang.org/x/net/websocket"
 )
 
 // Instantiate -- Start up the cluster of sockets and structures designed to wrangle them.
@@ -20,5 +21,15 @@ func Instantiate(pool *pgxpool.Pool) {
 		conn, _ := listener.Accept()
 		client := &client{conn: conn, data: make(chan []byte)}
 		f.register <- client
+	}
+}
+
+// Handler -- The main handler for connections
+func Handler(c *websocket.Conn) {
+	for {
+		var m string
+		websocket.Message.Receive(c, &m)
+		println(m)
+		websocket.Message.Send(c, "Penis")
 	}
 }

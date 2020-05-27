@@ -1,6 +1,7 @@
 package socket
 
 import (
+	"bufio"
 	"encoding/json"
 	"net"
 )
@@ -15,19 +16,24 @@ func (c client) write(s string) {
 }
 
 func (c client) read() (string, error) {
-	tooLong := make([]byte, 4096)
-	len, err := c.conn.Read(tooLong)
+	b := bufio.NewReader(c.conn)
+
+	raw, err := b.ReadBytes(byte('\n'))
 	if err != nil {
+		println("Fuck you", err.Error())
 		return "", err
 	}
-	raw := tooLong[:len]
-	return string(raw), nil
+	s := string(raw)
+	println("Internal register --", s)
+	return s, nil
 }
 
 // Convenience wrapper to return as marshaled JSON instead of a string.
 func (c client) marshal(m interface{}) error {
 	raw, err := c.read()
+	println(raw)
 	if err != nil {
+		println("Error in client.Marshal", err.Error())
 		return err
 	}
 	err = json.Unmarshal([]byte(raw), m)

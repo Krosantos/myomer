@@ -1,17 +1,7 @@
 package game
 
-// listen -- listen on the incoming command channel for player moves
-func (g Game) listen() {
-	for {
-		select {
-		case cmd := <-g.In:
-			g.parseCommand(cmd)
-		}
-	}
-}
-
-// parseCommand -- Parse incoming commands, apply them to the game state, return a list of instructions to send out to players
-func (g Game) parseCommand(cmd Command) {
+// ParseCommand -- Parse incoming commands, apply them to the game state, return a list of instructions to send out to players
+func (g Game) ParseCommand(cmd Command) {
 	switch c := cmd.(type) {
 	case moveCommand:
 		u, ok := g.units[c.Unit]
@@ -37,5 +27,11 @@ func (g Game) parseCommand(cmd Command) {
 		break
 	case endTurnCommand:
 	case forfeitCommand:
+		egi := endGameInstruction{
+			Action: action.ENDGAME,
+			Winner: 0,
+		}
+		g.Out <- egi
+	default:
 	}
 }

@@ -26,36 +26,46 @@ func (m match) addPlayer(p *player) {
 	m.lock.Lock()
 	m.players[p.id] = p
 	m.lock.Unlock()
-	p.client.write("Successfully added to game " + m.id)
+	p.client.write("You are " + p.name + ". Successfully added to game " + m.id)
 	go m.listenToPlayer(p)
 }
 
 // listenToGame -- Listen to instructions from the game, broadcast them out
 func (m match) listenToGame() {
+	println("I am listening to the game")
 	for {
 		select {
-		case i := <-m.game.Out:
-			m.broadcast(i.ToString())
-		case <-m.game.End:
-			for _, p := range m.players {
-				p.client.conn.Close()
-			}
-			m.active = false
-			break
+		case ins := <-m.game.Out:
+			m.broadcast(ins.ToString())
+		case cmd := <-m.game.In:
+			m.game.ParseCommand(cmd)
+			// case <-m.game.End:
+			// 	for _, p := range m.players {
+			// 		p.client.conn.Close()
+			// 	}
+			// 	m.active = false
+			// 	break
 		}
 	}
 }
 
 // listenToPlayer -- Listen to incoming messages
 func (m match) listenToPlayer(p *player) {
+	println("I am listening to a player", p.name)
+	p.client.write("Joke's on you, idiot, I don't even fucking work")
 	for {
 		raw, err := p.client.read()
 		if err != nil {
+			println("Lost a player", p.name, err.Error())
 			m.broadcast(err.Error() + "-" + p.name)
 			break
 		}
-		cmd, err := game.FormatCommand(raw)
-		m.game.In <- cmd
+		println("I have received something from the player: ", raw)
+		// cmd, err := game.FormatCommand(raw)
+		// if err != nil {
+		// 	println("Error receiving message", err.Error())
+		// }
+		// m.game.In <- cmd
 	}
 }
 
