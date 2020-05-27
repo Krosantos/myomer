@@ -18,8 +18,11 @@ type commandsEnum struct {
 	FORFEIT string
 }
 
-// Command -- an enum of commands
-var Command commandsEnum = commandsEnum{
+// Command -- the lazy interface for sending moves to the game
+type Command interface{}
+
+// cmdAction -- an enum of commands
+var cmdAction commandsEnum = commandsEnum{
 	MOVE:    "MOVE",
 	ABILITY: "ABILITY",
 	ATTACK:  "ATTACK",
@@ -28,35 +31,41 @@ var Command commandsEnum = commandsEnum{
 }
 
 type moveCommand struct {
-	Command string `json:"command"`
-	Unit    string `json:"unit"`
-	Tile    Coord  `json:"tile"`
+	Action string `json:"action"`
+	Unit   string `json:"unit"`
+	Tile   Coord  `json:"tile"`
+	Command
 }
 
 type abilityCommand struct {
-	Command string  `json:"command"`
-	Unit    string  `json:"unit"`
-	Targets []Coord `json:"targets"`
+	Action    string  `json:"action"`
+	Unit      string  `json:"unit"`
+	AbilityID string  `json:"abilityId"`
+	Targets   []Coord `json:"targets"`
+	Command
 }
 
 type attackCommand struct {
-	Command string `json:"command"`
-	Unit    string `json:"unit"`
-	Target  Coord  `json:"target"`
+	Action string `json:"action"`
+	Unit   string `json:"unit"`
+	Target Coord  `json:"target"`
+	Command
 }
 
 type endTurnCommand struct {
-	Command string `json:"command"`
+	Action string `json:"action"`
+	Command
 }
 
 type forfeitCommand struct {
-	Command   string `json:"command"`
+	Action    string `json:"action"`
 	Automatic bool   `json:"automatic"`
+	Command
 }
 
 // FormatCommand -- Given a string in, attempt to marshal a command
-func FormatCommand(s string) (interface{}, error) {
-	raw := make(map[string]interface{})
+func FormatCommand(s string) (Command, error) {
+	raw := make(map[string]Command)
 	err := json.Unmarshal([]byte(s), &raw)
 	if err != nil {
 		return nil, err
@@ -66,23 +75,23 @@ func FormatCommand(s string) (interface{}, error) {
 		return nil, errors.New("no command specified")
 	}
 	switch cmd {
-	case Command.MOVE:
+	case cmdAction.MOVE:
 		res := moveCommand{}
 		err = json.Unmarshal([]byte(s), &res)
 		return res, err
-	case Command.ABILITY:
+	case cmdAction.ABILITY:
 		res := abilityCommand{}
 		err = json.Unmarshal([]byte(s), &res)
 		return res, err
-	case Command.ATTACK:
+	case cmdAction.ATTACK:
 		res := attackCommand{}
 		err = json.Unmarshal([]byte(s), &res)
 		return res, err
-	case Command.ENDTURN:
+	case cmdAction.ENDTURN:
 		res := endTurnCommand{}
 		err = json.Unmarshal([]byte(s), &res)
 		return res, err
-	case Command.FORFEIT:
+	case cmdAction.FORFEIT:
 		res := forfeitCommand{}
 		err = json.Unmarshal([]byte(s), &res)
 		return res, err

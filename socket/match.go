@@ -55,7 +55,7 @@ func (m match) listenToPlayer(p *player) {
 			break
 		}
 		cmd, err := game.FormatCommand(raw)
-		m.game.ParseCommand(cmd)
+		m.game.In <- cmd
 	}
 }
 

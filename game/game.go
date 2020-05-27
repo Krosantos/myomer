@@ -7,6 +7,7 @@ type Game struct {
 	board      *board           // The game board
 	units      map[string]unit  // All the units
 	activeUnit *unit            // The unit whose turn it is
+	In         chan Command     // The game takes
 	Out        chan Instruction // The game broadcasts instructions here
 	End        chan bool        // The game makes a single call here when it's over
 }
@@ -14,13 +15,16 @@ type Game struct {
 // BuildGame -- Create a new game state with the provided armies
 func BuildGame() *Game {
 	b := getDefaultBoard()
-	return &Game{
+	g := &Game{
 		board:      &b,
 		units:      make(map[string]unit),
 		activeUnit: nil,
+		In:         make(chan Command),
 		Out:        make(chan Instruction),
 		End:        make(chan bool),
 	}
+	go g.listen()
+	return g
 }
 
 // PopulateArmy -- Given a JSON template and a board, fill it with an army
