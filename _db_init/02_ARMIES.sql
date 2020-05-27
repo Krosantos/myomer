@@ -14,6 +14,7 @@ INSERT INTO "armies" ("id", "user_id", "name", "cohort", "auxiliary", "created_a
 VALUES ('fabc3e24-5dca-47f4-86ba-b3e504de4ccb', '0dde213a-a81b-4b02-a665-41ec6c037112', 'Test Army', '{
     "units": {
         "15": {
+            "templateId": "W_HORSE",
             "name": "Horse",
             "cost": 250,
             "color": "blue",
@@ -36,6 +37,7 @@ VALUES ('fabc3e24-5dca-47f4-86ba-b3e504de4ccb', '0dde213a-a81b-4b02-a665-41ec6c0
     }
 }', '[
     {
+        "templateId": "W_HORSE",
         "name": "Horse",
         "cost": 250,
         "color": "blue",
@@ -61,6 +63,7 @@ INSERT INTO "armies" ("id", "user_id", "name", "cohort", "auxiliary", "created_a
 VALUES ('abcd661c-18c4-4c7a-bd9d-e35ac06a48f5', '0c79665d-0ff8-4df9-8d9e-fe44b4b36308', 'Test Army', '{
     "units": {
         "15": {
+            "templateId": "W_HORSE",
             "name": "Horse",
             "cost": 250,
             "color": "blue",
@@ -83,6 +86,7 @@ VALUES ('abcd661c-18c4-4c7a-bd9d-e35ac06a48f5', '0c79665d-0ff8-4df9-8d9e-fe44b4b
     }
 }', '[
     {
+        "templateId": "W_HORSE",
         "name": "Horse",
         "cost": 250,
         "color": "blue",

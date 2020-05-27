@@ -9,6 +9,7 @@ type army struct {
 }
 
 type unitTemplate struct {
+	TemplateID      string     `json:"templateId"`
 	Name            string     `json:"name"`
 	Cost            int        `json:"cost"`
 	Color           color      `json:"color"`
@@ -39,6 +40,7 @@ func getUnitTile(pos int, team int, b *board) *tile {
 func buildUnit(t unitTemplate, team int, tile *tile) unit {
 	result := unit{
 		id:              uuid.New().String(),
+		templateID:      t.TemplateID,
 		name:            t.Name,
 		team:            team,
 		cost:            t.Cost,

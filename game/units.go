@@ -4,6 +4,7 @@ package game
 type unit struct {
 	id              string
 	name            string
+	templateID      string
 	team            int
 	cost            int
 	color           color
