@@ -1,0 +1,23 @@
+{
+    "W_HORSE": {
+        "templateId": "W_HORSE",
+        "name": "Horse",
+        "cost": 250,
+        "color": "blue",
+        "strength": 2,
+        "health": 3,
+        "speed": 3,
+        "moxie": 45,
+        "attackRange": 1,
+        "attackType": "melee",
+        "moveType": "basic",
+        "onAttack": [],
+        "onDie": [],
+        "onKill": [],
+        "onMove": [],
+        "onStrike": [],
+        "onStruck": [],
+        "onTurnEnd": [],
+        "activeAbilities": []
+    }
+}

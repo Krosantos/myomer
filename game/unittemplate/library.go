@@ -1,6 +1,8 @@
 package unittemplate
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"path/filepath"
 )
 
@@ -12,11 +14,23 @@ var expansions []string = []string{
 }
 
 func init() {
-	fs, err := filepath.Glob("**.json")
+	Library = make(map[string]Template)
+	fs, err := filepath.Glob("game/unittemplate/**/**.json")
 	if err != nil {
-		println(err.Error())
+		panic("Error loading unit templates")
 	}
 	for _, f := range fs {
-		println(f)
+		chunk := make(map[string]Template)
+		raw, err := ioutil.ReadFile(f)
+		if err != nil {
+			panic("Error loading unit templates")
+		}
+		err = json.Unmarshal(raw, &chunk)
+		if err != nil {
+			panic("Error loading unit templates")
+		}
+		for id, t := range chunk {
+			Library[id] = t
+		}
 	}
 }
