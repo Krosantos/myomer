@@ -61,7 +61,7 @@ func (m match) listenToPlayer(p *player) {
 			m.broadcast(err.Error() + "-" + p.name)
 			break
 		}
-		cmd, err := game.FormatCommand(raw)
+		cmd, err := game.FormatCommand(raw, p.team)
 		if err != nil {
 			println("Error receiving message", err.Error())
 		}
