@@ -47,12 +47,12 @@ func ValidateLogin(pool *pgxpool.Pool, email string, plaintext string) bool {
 }
 
 // CreateUser -- Create a new user in the DB, returning any errors
-func CreateUser(pool *pgxpool.Pool, email string, username string, plaintext string) error {
+func CreateUser(pool *pgxpool.Pool, email string, username string, plaintext string) (string, error) {
 	hashed, hashErr := bcrypt.GenerateFromPassword([]byte(plaintext), 14)
 	id := uuid.New().String()
 	if hashErr != nil {
-		return hashErr
+		return "", hashErr
 	}
 	_, err := pool.Exec(context.Background(), "INSERT INTO users (id, username, email, password, elo, created_at, updated_at) VALUES ($1, $2, $3, $4, 1500, NOW(), NOW());", id, username, email, hashed)
-	return err
+	return id, err
 }

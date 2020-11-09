@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/krosantos/myomer/v2/auth"
 	"github.com/krosantos/myomer/v2/manager"
 )
 
@@ -22,11 +23,18 @@ func postUsers(c *gin.Context) {
 		return
 	}
 	dbPool := c.MustGet(cxtDbPool).(*pgxpool.Pool)
-	err := manager.CreateUser(dbPool, requestData.Email, requestData.Username, requestData.Password)
+	id, err := manager.CreateUser(dbPool, requestData.Email, requestData.Username, requestData.Password)
 	if err == nil {
-		c.Status(200)
+		claims := make(map[string]interface{})
+		claims["userId"] = id
+		tokenString, err := auth.WriteJwt(claims, 60)
+		if err != nil {
+			c.Status(200)
+		}
+		c.String(200, `{"token":"%v"}`, tokenString)
 	} else {
 		fmt.Println(err)
-		c.Status(400)
+
+		c.String(400, err.Error())
 	}
 }
