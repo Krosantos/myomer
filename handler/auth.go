@@ -36,21 +36,25 @@ func postLogin(c *gin.Context) {
 	bindErr := c.ShouldBindJSON(&requestData)
 	if bindErr != nil {
 		c.AbortWithError(400, bindErr)
+		return
 	}
 	dbPool := c.MustGet(cxtDbPool).(*pgxpool.Pool)
 	valid := manager.ValidateLogin(dbPool, requestData.Email, requestData.Password)
 	if valid != true {
 		c.AbortWithStatus(401)
+		return
 	}
 	user, findErr := manager.FindUserByEmail(dbPool, requestData.Email)
 	if findErr != nil {
 		c.AbortWithError(400, findErr)
+		return
 	}
 	claims := make(map[string]interface{})
 	claims["userId"] = user.ID
 	tokenString, err := auth.WriteJwt(claims, 60)
 	if err != nil {
 		c.AbortWithError(400, err)
+		return
 	}
 	c.String(200, `{"token":"%v"}`, tokenString)
 }

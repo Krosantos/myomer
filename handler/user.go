@@ -20,6 +20,7 @@ func postUsers(c *gin.Context) {
 	bindErr := c.ShouldBindJSON(&requestData)
 	if bindErr != nil {
 		fmt.Println(bindErr.Error())
+		c.AbortWithStatus(400)
 		return
 	}
 	dbPool := c.MustGet(cxtDbPool).(*pgxpool.Pool)
