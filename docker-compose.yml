@@ -13,22 +13,3 @@ services:
     ports:
       - 8080:8080
     env_file: ./.env
-
-  main:
-    build:
-      context: .
-      dockerfile: ./hmr.dockerfile
-    volumes:
-      - ./main.go:/app/main.go
-      - ./game:/app/game/
-      - ./handler:/app/handler
-      - ./manager:/app/manager
-      - ./socket:/app/socket
-      - ./maff:/app/maff
-      - ./auth:/app/auth
-    ports:
-      - 3050:3050
-      - 4500:4500
-    depends_on:
-      - db
-    env_file: ./.env

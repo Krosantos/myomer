@@ -40,6 +40,7 @@ func (g Game) buildUnit(tid string, team int, tile *tile) unit {
 		onStruck:        t.OnStruck,
 		onTurnEnd:       t.OnTurnEnd,
 		activeAbilities: t.ActiveAbilities,
+		auras:           make(map[string]Aura),
 		conditions:      make(map[string]Condition),
 		game:            &g,
 	}

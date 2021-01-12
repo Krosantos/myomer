@@ -27,6 +27,7 @@ type unit struct {
 	onTurnEnd       []string
 	activeAbilities []string
 	conditions      map[string]Condition
+	auras           map[string]Aura
 	game            *Game
 }
 
@@ -38,6 +39,10 @@ func (u unit) move(t *tile) {
 		Tile:   Coord{t.x, t.y},
 	}
 	u.game.Out <- mi
+	for _, aura := range u.auras {
+		aura.remove()
+		aura.move(t)
+	}
 	for _, ability := range u.onMove {
 		fn := onMoveRegistry[ability]
 

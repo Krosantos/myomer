@@ -13,7 +13,7 @@ type tile struct {
 type terrain string
 
 const (
-	grass terrain = "grass"
+	plain terrain = "plain"
 	void  terrain = "void"
 	water terrain = "water"
 )
@@ -100,7 +100,7 @@ func getDefaultBoard() board {
 			z:       0,
 			unit:    nil,
 			corpse:  nil,
-			terrain: grass,
+			terrain: plain,
 			board:   &result,
 		}
 		result.set(&t)
