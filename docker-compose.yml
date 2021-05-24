@@ -17,15 +17,9 @@ services:
   main:
     build:
       context: .
-      dockerfile: ./hmr.dockerfile
+      dockerfile: ./dockerfile
     volumes:
-      - ./main.go:/app/main.go
-      - ./game:/app/game/
-      - ./handler:/app/handler
-      - ./manager:/app/manager
-      - ./socket:/app/socket
-      - ./maff:/app/maff
-      - ./auth:/app/auth
+      - ./:/app
     ports:
       - 3050:3050
       - 4500:4500

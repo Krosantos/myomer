@@ -3,6 +3,8 @@ package socket
 import (
 	"sync"
 	"time"
+
+	"github.com/krosantos/myomer/v2/auth"
 )
 
 type foyer struct {
@@ -76,10 +78,11 @@ func (f foyer) receive(c *client) {
 			f.deregister(c, true)
 			break
 		}
-		// if auth.JwtMatchesUser(m.Auth, m.UserID) == false {
-		// 	f.deregister(c, true)
-		// 	break
-		// }
+		// This is where to also check that the user owns that army/it's valid
+		if auth.JwtMatchesUser(m.Auth, m.UserID) == false {
+			f.deregister(c, true)
+			break
+		}
 		if m.Action == "matchmake" {
 			err := mm.enqueue(c, m.UserID, m.ArmyID)
 			if err == nil {

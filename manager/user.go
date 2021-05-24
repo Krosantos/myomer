@@ -42,13 +42,13 @@ func ValidateLogin(pool *pgxpool.Pool, email string, plaintext string) bool {
 		return false
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(plaintext))
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(plaintext+email))
 	return err == nil
 }
 
 // CreateUser -- Create a new user in the DB, returning any errors
 func CreateUser(pool *pgxpool.Pool, email string, username string, plaintext string) (string, error) {
-	hashed, hashErr := bcrypt.GenerateFromPassword([]byte(plaintext), 14)
+	hashed, hashErr := bcrypt.GenerateFromPassword([]byte(plaintext+email), 14)
 	id := uuid.New().String()
 	if hashErr != nil {
 		return "", hashErr

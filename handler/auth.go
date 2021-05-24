@@ -40,7 +40,7 @@ func postLogin(c *gin.Context) {
 	}
 	dbPool := c.MustGet(cxtDbPool).(*pgxpool.Pool)
 	valid := manager.ValidateLogin(dbPool, requestData.Email, requestData.Password)
-	if valid != true {
+	if !valid {
 		c.AbortWithStatus(401)
 		return
 	}
