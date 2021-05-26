@@ -26,8 +26,9 @@ type unit struct {
 	onStruck        []string
 	onTurnEnd       []string
 	activeAbilities []string
-	conditions      map[string]Condition
 	auras           map[string]Aura
+	conditions      map[string]Condition
+	affectingAuras  map[string]Aura
 	game            *Game
 }
 
@@ -39,10 +40,7 @@ func (u unit) move(t *tile) {
 		Tile:   Coord{t.x, t.y},
 	}
 	u.game.Out <- mi
-	for _, aura := range u.auras {
-		aura.remove()
-		aura.move(t)
-	}
+
 	for _, ability := range u.onMove {
 		fn := onMoveRegistry[ability]
 
@@ -105,6 +103,7 @@ func (u unit) die(killer *unit) {
 		u.game.Out <- ai
 		fn(&u, killer)
 	}
+
 }
 
 // strike -- Calculate pre-mitigation damage, and go through side effects of an attack

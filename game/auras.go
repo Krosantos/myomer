@@ -3,11 +3,13 @@ package game
 // Aura -- An area of effect, centered around a unit, which moves with them
 type Aura interface {
 	id() string
+	templateID() string
 	source() *unit
 	remove()
 	move(*tile)
 	onEnter(*unit, *tile)
 	onLeave(*unit, *tile)
+	affectedUnits() []*unit
 }
 
 // PoisonCloud -- Poison units who enter

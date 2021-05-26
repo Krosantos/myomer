@@ -1,5 +1,7 @@
 package game
 
+import "github.com/google/uuid"
+
 // ActiveAbility -- An activated ability, to be used by a unit
 type ActiveAbility interface {
 	id() string
@@ -26,7 +28,7 @@ func (f poisonCloud) targetIsValid(u *unit, t *tile) bool {
 }
 func (f poisonCloud) activate(u *unit, t *tile) {
 	if t.unit != nil {
-		poison := Poison{3, 1, 0}
+		poison := Poison{uuid.New().String(), 3, 1, 0}
 		t.unit.addCondition(poison)
 	}
 }

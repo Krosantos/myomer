@@ -42,6 +42,7 @@ func (g Game) buildUnit(tid string, team int, tile *tile) unit {
 		activeAbilities: t.ActiveAbilities,
 		auras:           make(map[string]Aura),
 		conditions:      make(map[string]Condition),
+		affectingAuras:  make(map[string]Aura),
 		game:            &g,
 	}
 	tile.unit = &result
