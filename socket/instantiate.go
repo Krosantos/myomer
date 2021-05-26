@@ -1,6 +1,8 @@
 package socket
 
 import (
+	"time"
+
 	"github.com/jackc/pgx/v4/pgxpool"
 	"golang.org/x/net/websocket"
 )
@@ -21,5 +23,6 @@ func Handler(c *websocket.Conn) {
 	client := &client{conn: c}
 	f.register <- client
 	for {
+		time.Sleep(time.Minute * 1)
 	}
 }

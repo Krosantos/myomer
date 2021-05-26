@@ -67,14 +67,14 @@ func (gm gameManager) prune() {
 // reconnect -- attempt to replace a match connection with an incoming connection
 func (gm gameManager) reconnect(c *client, uid string, gid string) error {
 	match, ok := gm.activeGames[gid]
-	if ok != true {
+	if !ok {
 		for g := range gm.activeGames {
 			println(g)
 		}
 		return errors.New("game not found")
 	}
 	player, ok := match.players[uid]
-	if ok != true {
+	if !ok {
 		return errors.New("user not found in game")
 	}
 	match.lock.Lock()

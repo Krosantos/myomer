@@ -12,7 +12,6 @@ func (g Game) ParseCommand(cmd Command) {
 		if u.moveIsValid(t) {
 			u.move(t)
 		}
-		break
 	case abilityCommand:
 		//TODO: Implement any of this
 	case attackCommand:
@@ -24,7 +23,6 @@ func (g Game) ParseCommand(cmd Command) {
 		if u.attackIsValid(t) {
 			u.attack(t)
 		}
-		break
 	case endTurnCommand:
 	case forfeitCommand:
 		egi := endGameInstruction{
@@ -32,7 +30,6 @@ func (g Game) ParseCommand(cmd Command) {
 			Winner: 0,
 		}
 		g.Out <- egi
-		break
 	default:
 	}
 }

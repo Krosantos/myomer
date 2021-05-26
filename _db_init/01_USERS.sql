@@ -12,7 +12,7 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (id, username, email, password, elo, created_at, updated_at) 
-VALUES ('0dde213a-a81b-4b02-a665-41ec6c037112', 'Krosantos', 'tymko.tecca@gmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());
+VALUES ('0dde213a-a81b-4b02-a665-41ec6c037112', 'Krosantos', 'tymko.tecca@gmail.com', '$2a$14$yO5QD0ywZZ46qdPvQZpQE.eJFq.ZMkFQIsIripRQ66YYyT/gurU7e', 1500, NOW(), NOW());
 
 INSERT INTO users (id, username, email, password, elo, created_at, updated_at) 
 VALUES ('0c79665d-0ff8-4df9-8d9e-fe44b4b36308', 'Ramira', 'rgutierrez@gmail.com', 'hashyhashyhashy', 1500, NOW(), NOW());

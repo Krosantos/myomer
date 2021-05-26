@@ -63,18 +63,18 @@ func (m matchmaking) match() {
 	// and optimization, and fun. For now, just repeatedly pluck the top
 	// two candidates.
 	for range time.Tick(time.Second * time.Duration(1)) {
-		var cc *matchCandidate
+		var currentCandidate *matchCandidate
 		m.lock.Lock()
-		for mc := range m.candidates {
-			if cc == nil {
-				cc = mc
+		for matchCandidate := range m.candidates {
+			if currentCandidate == nil {
+				currentCandidate = matchCandidate
 			}
-			if cc != mc {
+			if currentCandidate != matchCandidate {
 				// Match found, baby! ezpz
-				err := gm.buildMatch(cc, mc)
+				err := gm.buildMatch(currentCandidate, matchCandidate)
 				if err == nil {
-					m.remove <- cc
-					m.remove <- mc
+					m.remove <- currentCandidate
+					m.remove <- matchCandidate
 				}
 			}
 		}
@@ -82,7 +82,7 @@ func (m matchmaking) match() {
 	}
 }
 
-// enqueue -- Attempt to enqueue a user, and a client, into matchmaking. Returns bool of success.
+// enqueue -- Attempt to enqueue a user, and a client, into matchmaking.r
 func (m matchmaking) enqueue(c *client, uid string, aid string) error {
 	u, err := manager.FindUserByID(m.pool, uid)
 	if err != nil {
